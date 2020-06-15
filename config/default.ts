@@ -15,7 +15,7 @@ export default {
     DB_PORT: 3306,
     DB_USER_NAME: 'root',
     DB_PASSWORD: '',
-    DB_NAME: 'db_login',
+    DB_NAME: 'db_ae',
     DB_SYNCHRONIZE: false,
     DB_LOGGING: true
   },

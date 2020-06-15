@@ -12,6 +12,7 @@ import { EverytingSubscriber } from 'common/subscriber/EverythingSubscriber';
 import { GlobalModule } from './global/global.module';
 import { typeOrmConfig } from "./config/typeorm.config";
 import { mailerConfig } from "./config/mailer.config";
+import { AuthService } from 'auth/auth.service';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { mailerConfig } from "./config/mailer.config";
     AuthModule,
     GlobalModule,
     MailerModule.forRoot(mailerConfig),
-  ]
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {

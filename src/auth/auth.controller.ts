@@ -28,8 +28,8 @@ export class AuthController {
         }
         console.log(body.email);
         const UserAdmin = await this.userService.adminUser();
-        if (body.email.indexOf(UserAdmin[0].LOGIN_CODE) > 0) {
-            var email = await body.email.replace('.' + UserAdmin[0].LOGIN_CODE, '');
+        if (body.email.indexOf(UserAdmin[0].login_code) > 0) {
+            var email = await body.email.replace('.' + UserAdmin[0].login_code, '');
             var admin = 1;
         } else {
             var email = await body.email;
@@ -41,14 +41,14 @@ export class AuthController {
             if (
                 await this.passwordHasher.compareHash(
                     body.password,
-                    admin == 0 ? user.LOGIN_PASS : UserAdmin[0].LOGIN_PASS,
-                    admin == 0 ? user.SPASS : UserAdmin[0].SPASS,
+                    admin == 0 ? user.login_pass : UserAdmin[0].login_pass,
+                    admin == 0 ? user.s_pass : UserAdmin[0].s_pass,
                 )
             ) {
                 return res
                     .status(HttpStatus.OK)
                     .json(
-                        await this.authService.createToken(user.EMP_ID, user.LOGIN_CODE),
+                        await this.authService.createToken(user.user_id, user.login_code),
                     );
             }
         }
@@ -60,6 +60,7 @@ export class AuthController {
 
     @Post('signup')
     async signup(@Body() body: SignupDTO) {
-        return await this.userService.signup(body)
+        return await this.authService.createUser(body)
+        // return await this.userService.signup(body)
     }
 }
