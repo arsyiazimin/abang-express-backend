@@ -10,13 +10,15 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EverytingSubscriber } from 'common/subscriber/EverythingSubscriber';
 import { GlobalModule } from './global/global.module';
-import { typeOrmConfig } from "./config/typeorm.config";
+import { typeOrmDb1Config } from "./config/typeormDb1.config";
+import { typeOrmDb2Config } from "./config/typeormDb2.config";
 import { mailerConfig } from "./config/mailer.config";
 import { AuthService } from 'auth/auth.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(typeOrmConfig),
+    TypeOrmModule.forRoot(typeOrmDb1Config),
+    TypeOrmModule.forRoot(typeOrmDb2Config),
     SharedModule,
     LoggerModule,
     AuthModule,

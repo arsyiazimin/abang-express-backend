@@ -9,13 +9,25 @@ export default {
     USE_EMAIL_TESTER: 'yes', //dev
     EMAIL_TO_TESTER: 'arsyiazimin@gmail.com'
   },
-  db: {
+  db1: {
+    NAME: 'default',
     DB_TYPE: 'mysql',
     DB_HOST: 'localhost',
     DB_PORT: 3306,
     DB_USER_NAME: 'root',
     DB_PASSWORD: '',
     DB_NAME: 'db_ae',
+    DB_SYNCHRONIZE: false,
+    DB_LOGGING: true
+  },
+  db2: {
+    NAME: 'abaj2285_ax',
+    DB_TYPE: 'mysql',
+    DB_HOST: 'localhost',
+    DB_PORT: 3306,
+    DB_USER_NAME: 'root',
+    DB_PASSWORD: '',
+    DB_NAME: 'abaj2285_ax',
     DB_SYNCHRONIZE: false,
     DB_LOGGING: true
   },
