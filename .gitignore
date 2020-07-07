@@ -1,7 +1,7 @@
 # compiled output
 dist
 node_modules
-src/file
+src/file/content
 
 #package
 package-lock.json
