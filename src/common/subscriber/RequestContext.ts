@@ -38,7 +38,6 @@ export class RequestContext {
         // console.log(requestContext);
         if (requestContext) {
             const user: any = requestContext.request['user'];
-            // console.log(user[0]);
             if (user) {
                 return user.user;
             }

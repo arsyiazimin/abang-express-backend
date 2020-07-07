@@ -14,16 +14,32 @@ import { typeOrmDb1Config } from "./config/typeormDb1.config";
 import { typeOrmDb2Config } from "./config/typeormDb2.config";
 import { mailerConfig } from "./config/mailer.config";
 import { AuthService } from 'auth/auth.service';
+import { BlogModule } from './modules/blog/blog.module';
+import { OpenApiModule } from './modules/open-api/open-api.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmDb1Config),
     TypeOrmModule.forRoot(typeOrmDb2Config),
+    // MulterModule.register({
+    //   storage: diskStorage({
+    //     filename: (req, file, cb) => {
+    //       let name = file.originalname.split('.').slice(0, -1)
+    //       const randomName = `${name}`
+    //       return cb(null, `${randomName}${extname(file.originalname)}`)
+    //     }
+    //   })
+    // }),
     SharedModule,
     LoggerModule,
     AuthModule,
     GlobalModule,
     MailerModule.forRoot(mailerConfig),
+    BlogModule,
+    OpenApiModule,
   ],
 })
 export class AppModule implements NestModule {
