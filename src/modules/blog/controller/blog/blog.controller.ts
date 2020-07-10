@@ -35,6 +35,12 @@ export class BlogController {
         return await this.blogService.getBlogList(res)
     }
 
+    @Get('getOneBlog/:content_id')
+    @ApiImplicitParam({ name: 'content_id' })
+    async getOneBlog(@Param('content_id') content_id, @Res() res) {
+        return await this.blogService.getOneBlog(content_id, res)
+    }
+
     @Post('deleteContent')
     async deleteContent(@Body() data, @Res() res) {
         return await this.blogService.deleteContent(data, res);
@@ -55,15 +61,6 @@ export class BlogController {
     }
 
     @Post('saveBlog')
-    // @UseInterceptors(FilesInterceptor('file_desktop', 100, {
-    //     storage: diskStorage({
-    //         filename: (req, file_desktop, cb) => {
-    //             let name = file_desktop.originalname.split('.').slice(0, -1)
-    //             const randomName = `${name}`
-    //             return cb(null, `${randomName}${extname(file_desktop.originalname)}`)
-    //         }
-    //     })
-    // }))
     @UseInterceptors(FileFieldsInterceptor([
         {
             name: 'file_desktop',
@@ -74,7 +71,22 @@ export class BlogController {
     ]))
     async saveBlog(@UploadedFiles() files, @Body() Body, @Res() res) {
         let data = JSON.parse(Body.data)
-        // console.log(files)
         return await this.blogService.saveBlog(files, data, res)
+    }
+
+    @Put('updateBlog/:content_id')
+    @ApiImplicitParam({ name: 'content_id' })
+    @UseInterceptors(FileFieldsInterceptor([
+        {
+            name: 'file_desktop',
+        },
+        {
+            name: 'file_mobile'
+        }
+    ]))
+    async updateBlog(@Param('content_id') content_id, @UploadedFiles() files, @Body() Body, @Res() res) {
+        let data = JSON.parse(Body.data)
+        // console.log(files)
+        return await this.blogService.updateContent(content_id, files, data, res)
     }
 }
