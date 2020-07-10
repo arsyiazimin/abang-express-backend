@@ -141,7 +141,7 @@ export class BlogService {
             console.log(main)
 
             let fileData = []
-            if (file.file_desktop.length != 0) {
+            if (file.file_desktop !== undefined && file.file_desktop.length != 0) {
                 for (let index = 0; index < file.file_desktop.length; index++) {
                     let resFile = await this.uploadPath(file.file_desktop[index], main['content_id']);
                     fileData.push({
@@ -157,7 +157,7 @@ export class BlogService {
                 }
             }
 
-            if (file.file_mobile.length != 0) {
+            if (file.file_mobile !== undefined && file.file_mobile.length != 0) {
                 for (let index = 0; index < file.file_mobile.length; index++) {
                     let resFile = await this.uploadPath(file.file_mobile[index], main['content_id']);
                     fileData.push({
@@ -266,17 +266,67 @@ export class BlogService {
                 await queryRunner.manager.remove(dataRemove).catch(async err => {
                     throw new Error(err)
                 })
+                dataRemove.forEach(el => {
+                    if (el.file_name) {
+                        console.log(el)
+                        unlinkSync(`src/file/content/${el.path_location}${el.file_name}`)
+                    }
+                })
             }
 
             await queryRunner.manager.save(main).catch(async error => {
                 throw new Error(error);
             });
 
+            console.log('main')
+            console.log(main)
+
+            let fileData = []
+            if (file.file_desktop !== undefined && file.file_desktop.length != 0) {
+                for (let index = 0; index < file.file_desktop.length; index++) {
+                    let resFile = await this.uploadPath(file.file_desktop[index], content_id);
+                    fileData.push({
+                        content_id: content_id,
+                        file_name: resFile.filename,
+                        mime_type: file.file_desktop[index].mimetype,
+                        path_location: resFile.path,
+                        device_name: 'desktop',
+                        status_id: 1,
+                        create_id: RequestContext.currentUser().login_id,
+                        create_date: new Date()
+                    });
+                }
+            }
+
+            if (file.file_mobile !== undefined && file.file_mobile.length != 0) {
+                for (let index = 0; index < file.file_mobile.length; index++) {
+                    let resFile = await this.uploadPath(file.file_mobile[index], content_id);
+                    fileData.push({
+                        content_id: content_id,
+                        file_name: resFile.filename,
+                        mime_type: file.file_mobile[index].mimetype,
+                        path_location: resFile.path,
+                        device_name: 'mobile',
+                        status_id: 1,
+                        create_id: RequestContext.currentUser().login_id,
+                        create_date: new Date()
+                    });
+                }
+            }
+
+            const dataFileCreate = await this.FileRepo.create(fileData);
+            await queryRunner.manager.save(dataFileCreate).catch(async error => {
+                throw new Error(error);
+            })
+
+            console.log(dataFileCreate)
+            // await queryRunner.rollbackTransaction();
             await queryRunner.commitTransaction();
             return res
                 .status(HttpStatus.OK)
                 .json({ message: 'Delete Successfully' });
         } catch (error) {
+            console.log(error)
             await queryRunner.rollbackTransaction();
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -366,4 +416,28 @@ export class BlogService {
                 .json({ message: error.message });
         }
     }
+
+    async getOneBlog(content_id: number, @Res() res): Promise<any> {
+        try {
+            const dataContent = await this.ContentRepo.findOne({ where: { status_id: 1, content_id: content_id } });
+
+            if (dataContent) {
+                const dataFile = await this.FileRepo.find({ where: { status_id: 1, content_id: content_id } });
+
+                dataContent.FILE = await dataFile;
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'data found.', respon: dataContent });
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'no data found.', respon: dataContent });
+            }
+        } catch (error) {
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message });
+        }
+    }
+
 }
