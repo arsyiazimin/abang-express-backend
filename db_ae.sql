@@ -86,7 +86,7 @@ CREATE TABLE `m_user` (
   `last_name` varchar(500) NOT NULL,
   `email` varchar(500) NOT NULL,
   `status_id` int(11) NOT NULL DEFAULT 0,
-  `create_date` date NOT NULL DEFAULT current_timestamp(),
+  `create_date` date NOT NULL,
   `update_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -94,8 +94,8 @@ CREATE TABLE `m_user` (
 -- Dumping data untuk tabel `m_user`
 --
 
-INSERT INTO `m_user` (`user_id`, `first_name`, `last_name`, `email`, `status_id`, `create_date`, `update_date`) VALUES
-(1, 'Developer', '', 'dev@gmail.com', 1, '2020-06-10', '0000-00-00');
+INSERT INTO `m_user` (`user_id`, `first_name`, `last_name`, `email`, `status_id`) VALUES
+(1, 'Developer', '', 'dev@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -108,9 +108,9 @@ CREATE TABLE `t_assign` (
   `user_id` int(11) NOT NULL,
   `role_id` int(11) NOT NULL,
   `create_id` int(11) NOT NULL,
-  `create_date` date NOT NULL DEFAULT current_timestamp(),
+  `create_date` date NOT NULL,
   `update_id` int(11) NOT NULL,
-  `update_date` date NOT NULL DEFAULT current_timestamp()
+  `update_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
