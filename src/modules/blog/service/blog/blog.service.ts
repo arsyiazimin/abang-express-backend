@@ -440,4 +440,105 @@ export class BlogService {
         }
     }
 
+    async getSlideContent(@Res() res): Promise<any> {
+        let result: { message: string, respon: any, error_bit: boolean } = { message: '', respon: '', error_bit: true };
+        try {
+            const dataContent = await this.ContentRepo.find({ where: { status_id: 1, slide_bit: 1 } });
+
+            if (dataContent.length !== 0) {
+                const dataFile = await this.FileRepo.find({ where: { status_id: 1 } });
+
+                dataContent.map(async v => v.FILE = await dataFile.filter(e => e.content_id == v.content_id));
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'data found.', respon: dataContent });
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'no data found.', respon: dataContent });
+            }
+        } catch (error) {
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message });
+        }
+    }
+
+    async getOneBlogByTitle(title_url: string, @Res() res): Promise<any> {
+        try {
+            const dataContent = await this.ContentRepo.findOne({ where: { status_id: 1, title_url: title_url } });
+
+            if (dataContent) {
+                const dataFile = await this.FileRepo.find({ where: { status_id: 1, content_id: dataContent.content_id } });
+
+                dataContent.FILE = await dataFile;
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'data found.', respon: dataContent });
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'no data found.', respon: dataContent });
+            }
+        } catch (error) {
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message });
+        }
+    }
+
+    async filter(filterVal: any, @Res() res): Promise<any> {
+        try {
+            console.log(filterVal)
+            let where: any = ''
+            let where_array = []
+
+            if (filterVal.title !== '' && filterVal.title !== null) {
+                where = `c.title like '%${filterVal.title}%'`;
+                where_array.push(where)
+            }
+
+            if (filterVal.type !== null && filterVal.type.length !== 0) {
+                where = `c.type_id in (${filterVal.type.join(',')})`;
+                where_array.push(where)
+            }
+
+            if (filterVal.category !== null && filterVal.category.length !== 0) {
+                where = `rel.category_id in (${filterVal.category.join(',')})`;
+                where_array.push(where)
+            }
+
+
+            // if (filterVal.year !== null && filterVal.year.length !== 0) {
+
+            // }
+
+            // const dataContent = await this.ContentRepo.find({ where: { status_id: 1, type_id: Not(IsNull()) } });
+            const dataContent = await getManager()
+                .createQueryBuilder(Content, 'c')
+                .leftJoin(cateRel, 'rel', 'c.content_id = rel.content_id')
+                .where(where_array.join(" AND "))
+                .andWhere(`c.status_id = 1 AND type_id is not null`)
+                .orderBy(`c.create_date`, 'DESC')
+                .getMany();
+
+            if (dataContent.length !== 0) {
+                const dataFile = await this.FileRepo.find({ where: { status_id: 1 } });
+
+                await dataContent.map(async v => v.FILE = await dataFile.filter(e => e.content_id == v.content_id));
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'data found.', respon: dataContent });
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'no data found.', respon: dataContent });
+            }
+        } catch (error) {
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message });
+        }
+    }
+
 }

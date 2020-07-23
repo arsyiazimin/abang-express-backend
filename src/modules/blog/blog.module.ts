@@ -31,6 +31,7 @@ import { extname } from 'path';
     }),
   ],
   controllers: [BlogController],
-  providers: [BlogService]
+  providers: [BlogService],
+  exports: [BlogService]
 })
 export class BlogModule { }
