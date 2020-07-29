@@ -66,7 +66,7 @@ export class BlogService {
         }
     }
 
-    async saveImageContent(file: any, @Res() res): Promise<any> {
+    async saveImageContentDesktop(file: any, @Res() res): Promise<any> {
         const entityManager = getManager();
         const connection = entityManager.connection;
         const queryRunner = await connection.createQueryRunner();
@@ -98,6 +98,64 @@ export class BlogService {
                         mime_type: file[index].mimetype,
                         path_location: resFile.path,
                         device_name: 'desktop',
+                        status_id: 1,
+                        create_id: RequestContext.currentUser().login_id,
+                        create_date: new Date()
+                    });
+                }
+            }
+
+            const dataFile = await this.FileRepo.create(fileData);
+            await queryRunner.manager.save(dataFile).catch(async error => {
+                throw new Error(error);
+            })
+
+            await queryRunner.commitTransaction();
+            return res
+                .status(HttpStatus.OK)
+                .json({ message: 'Save Successfully' });
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message });
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
+    async saveImageContentMobile(file: any, @Res() res): Promise<any> {
+        const entityManager = getManager();
+        const connection = entityManager.connection;
+        const queryRunner = await connection.createQueryRunner();
+
+        // let result: { message: string, respon: any, error_bit: boolean } = { message: '', respon: '', error_bit: true };
+        let result: any
+
+        await queryRunner.startTransaction();
+        try {
+
+            const main = await this.ContentRepo.create({
+                slide_bit: 1,
+                status_id: 1,
+                create_id: RequestContext.currentUser().login_id,
+                create_date: new Date()
+            });
+
+            await queryRunner.manager.save(main).catch(async error => {
+                throw new Error(error);
+            })
+
+            let fileData = []
+            if (file.length != 0) {
+                for (let index = 0; index < file.length; index++) {
+                    let resFile = await this.uploadPath(file[index], main['content_id']);
+                    fileData.push({
+                        content_id: main['content_id'],
+                        file_name: resFile.filename,
+                        mime_type: file[index].mimetype,
+                        path_location: resFile.path,
+                        device_name: 'mobile',
                         status_id: 1,
                         create_id: RequestContext.currentUser().login_id,
                         create_date: new Date()
@@ -205,12 +263,12 @@ export class BlogService {
 
         await queryRunner.startTransaction();
         try {
-            data.update_id = RequestContext.currentUser().login_id
-            data.update_date = new Date();
-            data.FILE.forEach((element, index) => {
-                data.FILE[index].update_id = RequestContext.currentUser().login_id
-                data.FILE[index].update_date = new Date()
-            });
+            // data.update_id = RequestContext.currentUser().login_id
+            // data.update_date = new Date();
+            // data.FILE.forEach((element, index) => {
+            //     data.FILE[index].update_id = RequestContext.currentUser().login_id
+            //     data.FILE[index].update_date = new Date()
+            // });
 
             const main = await this.ContentRepo.create(data);
 
@@ -232,7 +290,7 @@ export class BlogService {
         }
     }
 
-    async updateContent(content_id: number, file: any, data: any, @Res() res): Promise<any> {
+    async updateBlog(content_id: number, file: any, data: any, @Res() res): Promise<any> {
         const entityManager = getManager();
         const connection = entityManager.connection;
         const queryRunner = await connection.createQueryRunner();
@@ -336,6 +394,46 @@ export class BlogService {
         }
     }
 
+    async deleteBlog(content_id: number, data: any, @Res() res): Promise<any> {
+        const entityManager = getManager();
+        const connection = entityManager.connection;
+        const queryRunner = await connection.createQueryRunner();
+        let dataRemove = []
+        let result: { message: string, respon: any, error_bit: boolean } = { message: '', respon: '', error_bit: true };
+
+        await queryRunner.startTransaction();
+        try {
+            const dataExist = await this.ContentRepo.findOne({ where: { content_id: content_id } });
+            if (dataExist) {
+                const main = await this.ContentRepo.create(data);
+
+                await queryRunner.manager.save(main).catch(async error => {
+                    throw new Error(error);
+                });
+
+                console.log('main')
+                console.log(main)
+                // await queryRunner.rollbackTransaction();
+                await queryRunner.commitTransaction();
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'Delete Successfully' });
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'No data found.' });
+            }
+        } catch (error) {
+            console.log(error)
+            await queryRunner.rollbackTransaction();
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message });
+        } finally {
+            await queryRunner.release();
+        }
+    }
+
     async uploadPath(file, content_id) {
 
         const exacpath: string = 'src/file/content/';
@@ -354,7 +452,8 @@ export class BlogService {
         let filename = md5(file.originalname).substr(0, 10);
         let random = Math.floor(Math.random() * 99);
 
-        finalName = moment(new Date()).format('YYYYMMDDHHmm') + random + '-' + filename + '.' + filext[filext.length - 1];
+        // finalName = moment(new Date()).format('YYYYMMDDHHmm') + random + '-' + filename + '.' + filext[filext.length - 1];
+        finalName = moment(new Date()).format('YYYYMMDDHHmm') + random + '-' + file.originalname;
         finalpath = exacpath + dir + finalName;
         console.log(oldPath, finalpath)
         try {
@@ -369,15 +468,29 @@ export class BlogService {
 
     }
 
-    async getImageContentList(@Res() res): Promise<any> {
+    async getImageContentList(device: string, @Res() res): Promise<any> {
         let result: { message: string, respon: any, error_bit: boolean } = { message: '', respon: '', error_bit: true };
         try {
-            const dataContent = await this.ContentRepo.find({ where: { status_id: 1, type_id: IsNull() } });
+            // const dataContent = await this.ContentRepo.find({
+            //     join: {
+            //         alias: 'c',
+            //         leftJoinAndSelect: {
+            //             FILE: 'c.FILE',
+            //         }
+            //     },
+            //     where: { status_id: 1, type_id: IsNull() }
+            // });
+
+            const dataContent = await this.ContentRepo
+                .createQueryBuilder('c')
+                .leftJoinAndMapMany('c.FILE', File, 'f', 'c.content_id = f.content_id')
+                .where(`c.status_id = :status_id AND c.type_id IS NULL AND LOWER(f.device_name) = :device_name`, { status_id: 1, device_name: device })
+                .getMany()
 
             if (dataContent.length !== 0) {
-                const dataFile = await this.FileRepo.find({ where: { status_id: 1 } });
+                // const dataFile = await this.FileRepo.find({ where: { status_id: 1, device_name: device.toLowerCase() } });
 
-                dataContent.map(async v => v.FILE = await dataFile.filter(e => e.content_id == v.content_id));
+                // dataContent.map(async v => v.FILE = await dataFile.filter(e => e.content_id == v.content_id));
                 return res
                     .status(HttpStatus.OK)
                     .json({ message: 'data found.', respon: dataContent });

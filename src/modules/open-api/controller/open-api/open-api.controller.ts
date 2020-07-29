@@ -4,6 +4,9 @@ import { BlogService } from 'modules/blog/service/blog/blog.service';
 import { get } from 'config';
 import { AbangExpressService } from 'global/abang-express/abang-express.service';
 import { async } from 'rxjs/internal/scheduler/async';
+import { PartnerService } from 'modules/partner/service/partner.service';
+import { LayananService } from 'modules/layanan/service/layanan.service';
+import { CompanyService } from 'modules/company/service/company.service';
 
 @ApiUseTags('Open API')
 @Controller('open-api')
@@ -11,7 +14,10 @@ export class OpenApiController {
 
     constructor(
         private blogService: BlogService,
-        private axService: AbangExpressService
+        private axService: AbangExpressService,
+        private partnerService: PartnerService,
+        private layananService: LayananService,
+        private companyService: CompanyService
     ) { }
 
     @Get('files/:year/:folder/:image')
@@ -19,7 +25,8 @@ export class OpenApiController {
     @ApiImplicitParam({ name: 'folder' })
     @ApiImplicitParam({ name: 'image' })
     async getImage(@Param('year') year, @Param('folder') folder, @Param('image') image, @Res() res): Promise<any> {
-        let path = 'src/file/content/';
+        let main_folder = folder.split('-')
+        let path = `src/file/${main_folder[0]}/`;
         res.sendFile(image, { root: path + year + '/' + folder });
     }
 
@@ -98,5 +105,21 @@ export class OpenApiController {
     @ApiImplicitParam({ name: 'no_resi' })
     async trackResi(@Param('no_resi') no_resi, @Res() res) {
         return await this.axService.trackResi(no_resi, res)
+    }
+
+    @Get('getAllPartner')
+    async getAllpartner(@Res() res) {
+        return await this.partnerService.getAllPartner(res)
+    }
+
+    @Get('getAllLayanan')
+    async getAllLayanan(@Res() res) {
+        return await this.layananService.getAllLayanan(res)
+    }
+
+    @Get('getOneCompany/:company_id')
+    @ApiImplicitParam({ name: 'company_id' })
+    async getOneCompany(@Param('company_id') company_id, @Res() res) {
+        return await this.companyService.getOneCompany(company_id, res)
     }
 }

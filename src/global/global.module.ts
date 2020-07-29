@@ -7,6 +7,6 @@ import { AbangExpressModule } from './abang-express/abang-express.module';
 
 @Module({
   imports: [UserModule, MenuModule, UserLoginModule, AbangExpressModule],
-  exports: [UserModule, MenuModule, UserLoginModule]
+  exports: [UserModule, MenuModule, UserLoginModule, AbangExpressModule]
 })
 export class GlobalModule { }
