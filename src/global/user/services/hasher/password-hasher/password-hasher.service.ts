@@ -49,8 +49,18 @@ export class PasswordHasherService {
             return false
         }
     }
+
     async compareBcrypt(password, salt): Promise<boolean> {
         // const pass = await this.encryptCrypto(password)
         return await bcrypt.compare(password, salt)
+    }
+
+    async compareMd5(password: string | undefined, hash: string | undefined): Promise<boolean> {
+        const enc = md5(password);
+        if (enc === hash) {
+            return true
+        } else {
+            return false
+        }
     }
 }

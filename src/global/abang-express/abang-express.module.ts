@@ -18,7 +18,7 @@ import { log } from './entity/log.entity';
       tujuan,
       kotaAgen,
       Transaksi,
-      log
+      log,
     ])
   ],
   providers: [AbangExpressService],

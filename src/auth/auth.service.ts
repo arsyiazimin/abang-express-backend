@@ -7,6 +7,7 @@ import * as conf from '../../config/default';
 import { AuthInterfaces } from './interfaces/auth.interface';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { SignupDTO } from './dto/signup.dto';
+import { AbangExpressService } from 'global/abang-express/abang-express.service';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,8 @@ export class AuthService {
     constructor(
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
-        private readonly _configurationService: ConfigurationService
+        private readonly _configurationService: ConfigurationService,
+        private readonly abangExpressService: AbangExpressService
         // @Inject('MailerProvider') private readonly mailerProvider
     ) {
         AuthService.expired = _configurationService.get(Configuration.JWT_EXPIRED);
@@ -51,6 +53,34 @@ export class AuthService {
         };
     }
 
+    async createTokenMobile(username: string) {
+        let image_url = '';
+        let image_path = '';
+        const data = await this.abangExpressService.getUserByUsername(username);
+        const images = data.logo
+        const full_name = `${data.nama}`;
+        const today = new Date()
+        today.setSeconds(today.getSeconds() + conf.default.DAILY_EXPIRED)
+
+        if (images) {
+            // image_path = images.PATH_LOCATION + '' + images.FILE_NAME;
+            // image_url = image_path;
+        }
+        const user = {
+            username,
+            full_name,
+            images,
+            daily_exp: conf.default.DAILY_EXPIRED,
+            daily_date: today
+        };
+        const accessToken = this.jwtService.sign(user);
+        console.log(accessToken)
+        return {
+            expiresIn: AuthService.expired,
+            accessToken,
+        };
+    }
+
     async validateUser(payload: JwtPayload): Promise<any> {
         if (payload && payload.username) {
             const user = await this.userService.getUser(payload.id, payload.username);
@@ -70,7 +100,7 @@ export class AuthService {
         console.log(dataUser)
         if (!dataUser.error_bit) {
             return this.createToken(dataUser.result.user_id, dataUser.result.email)
-        } 
+        }
         return dataUser.result
     }
 }
