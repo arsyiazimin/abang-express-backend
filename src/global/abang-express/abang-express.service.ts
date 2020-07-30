@@ -323,4 +323,13 @@ export class AbangExpressService {
                 .json({ message: error.message, respon: error });
         }
     }
+
+    async getUserByUsername(username: string): Promise<users> {
+        username = username.toLowerCase()
+        const user = await getManager()
+            .createQueryBuilder(users, 'user')
+            .where(`LOWER(user.username) = :username`, { username: username })
+            .getOne()
+        return user;
+    }
 }

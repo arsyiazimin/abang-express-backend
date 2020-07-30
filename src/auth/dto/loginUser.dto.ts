@@ -8,3 +8,10 @@ export class LoginUserDto {
     @ApiModelProperty()
     readonly password: string;
 }
+export class LoginUserMobileDto {
+    @ApiModelProperty()
+    readonly username: string;
+
+    @ApiModelProperty()
+    readonly password: string;
+}

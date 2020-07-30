@@ -19,6 +19,9 @@ import { OpenApiModule } from './modules/open-api/open-api.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { PartnerModule } from './modules/partner/partner.module';
+import { CompanyModule } from './modules/company/company.module';
+import { LayananModule } from './modules/layanan/layanan.module';
 
 @Module({
   imports: [
@@ -40,6 +43,9 @@ import { extname } from 'path';
     MailerModule.forRoot(mailerConfig),
     BlogModule,
     OpenApiModule,
+    PartnerModule,
+    CompanyModule,
+    LayananModule,
   ],
 })
 export class AppModule implements NestModule {
