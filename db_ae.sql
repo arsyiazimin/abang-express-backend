@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 29 Jul 2020 pada 04.01
+-- Waktu pembuatan: 11 Agu 2020 pada 20.32
 -- Versi server: 10.4.11-MariaDB
 -- Versi PHP: 7.2.31
 
@@ -120,11 +120,11 @@ CREATE TABLE `m_menu` (
 --
 
 INSERT INTO `m_menu` (`MENU_ID`, `TITLE`, `ICON`, `TYPE`, `BADGE_TYPE`, `BADGE_VALUE`, `ACTIVE`, `PATH`, `BOOKMARK`, `PARENT_ID`, `IS_ACTIVE`, `CONDITION`) VALUES
-(1, 'Dashboard', 'home', 'link', 'primary', 'new', 0, '/dashboard', 0, NULL, 1, 0),
+(1, 'Dashboard', 'home', 'link', 'primary', 'new', 0, '/dashboard', 0, NULL, 0, 0),
 (6, 'Image Content', 'image', 'link', 'primary', 'new', 0, '/image-contents', 0, NULL, 1, 0),
 (7, 'Blog', 'edit', 'link', 'primary', 'new', 0, '/blog', 0, NULL, 1, 0),
 (10, 'Partner', 'users', 'link', 'primary', 'new', NULL, '/partner', 0, NULL, 1, 0),
-(11, 'Company', 'home', 'link', 'primary', 'new', 0, '/company', 0, NULL, 1, 0),
+(11, 'Company', 'home', 'link', 'primary', 'new', 0, '/company', 0, NULL, 0, 0),
 (12, 'Layanan', 'monitor', 'link', 'primary', 'new', 0, '/layanan', 0, NULL, 1, 0);
 
 -- --------------------------------------------------------
@@ -212,15 +212,21 @@ CREATE TABLE `m_user` (
   `email` varchar(500) NOT NULL,
   `status_id` int(11) NOT NULL DEFAULT 0,
   `create_date` date NOT NULL DEFAULT current_timestamp(),
-  `update_date` date NOT NULL
+  `update_date` date NOT NULL,
+  `foto_profile` varchar(255) DEFAULT NULL,
+  `path_location` varchar(255) DEFAULT NULL,
+  `banner` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `job_title_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data untuk tabel `m_user`
 --
 
-INSERT INTO `m_user` (`user_id`, `first_name`, `last_name`, `email`, `status_id`, `create_date`, `update_date`) VALUES
-(1, 'Developer', '', 'dev@gmail.com', 1, '2020-06-10', '0000-00-00');
+INSERT INTO `m_user` (`user_id`, `first_name`, `last_name`, `email`, `status_id`, `create_date`, `update_date`, `foto_profile`, `path_location`, `banner`, `address`, `phone`, `job_title_name`) VALUES
+(1, 'Developer', 'Ax', 'dev@gmail.com', 1, '2020-06-10', '0000-00-00', '20200810004722-5a15d1e74f.jpg', '2020/profile-1/', NULL, 'Jakarta', '123123', NULL);
 
 -- --------------------------------------------------------
 
@@ -259,7 +265,10 @@ CREATE TABLE `t_category_rel` (
 --
 
 INSERT INTO `t_category_rel` (`category_rel_id`, `category_id`, `content_id`, `create_id`, `create_date`, `update_id`, `update_date`) VALUES
-(7, 1, 86, 1, '2020-07-25 21:05:16', NULL, NULL);
+(7, 1, 86, 1, '2020-07-25 21:05:16', NULL, NULL),
+(8, 1, 92, 1, '2020-08-12 00:51:22', NULL, NULL),
+(9, 1, 93, 1, '2020-08-12 00:55:19', NULL, NULL),
+(10, 1, 94, 1, '2020-08-12 00:56:04', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -290,11 +299,15 @@ INSERT INTO `t_content` (`content_id`, `title`, `title_url`, `content`, `type_id
 (83, NULL, NULL, NULL, NULL, 1, 0, 1, '2020-07-18 20:58:22', 1, '2020-07-28 19:44:56', NULL),
 (84, NULL, NULL, NULL, NULL, 1, 0, 1, '2020-07-18 20:59:01', 1, '2020-07-25 11:11:28', NULL),
 (85, NULL, NULL, NULL, NULL, 1, 0, 1, '2020-07-25 11:10:11', 1, '2020-07-25 11:11:17', NULL),
-(86, 'Testing', 'Testing', '<html>\n<head>\n	<title></title>\n</head>\n<body>\n<p>TesssssTesssssTesssssTesssssTesssssTesssss</p>\n</body>\n</html>\n', 2, 0, 1, 1, '2020-07-25 21:05:08', 1, '2020-07-25 23:55:53', 0),
+(86, 'Testing', 'Testing', '<html>\n<head>\n	<title></title>\n</head>\n<body>\n<p>Lorem&nbsp;ipsum&nbsp;dolor&nbsp;sit&nbsp;amet,&nbsp;consectetur&nbsp;adipisicing&nbsp;elit.&nbsp;Maiores&nbsp;distinctio&nbsp;eaque&nbsp;ab&nbsp;voluptatibus&nbsp;animi&nbsp;praesentium&nbsp;beatae&nbsp;nesciunt&nbsp;doloribus&nbsp;iure&nbsp;impedit!&nbsp;Laudantium&nbsp;hic&nbsp;quos&nbsp;nulla&nbsp;deleniti&nbsp;ex&nbsp;distinctio&nbsp;error&nbsp;delectus&nbsp;aperiam!</p>\n</body>\n</html>\n', 1, 0, 1, 1, '2020-07-25 21:05:08', 1, '2020-07-25 23:55:53', 0),
 (87, NULL, NULL, NULL, NULL, 1, 0, 1, '2020-07-25 23:56:13', 1, '2020-07-25 23:56:20', NULL),
 (88, NULL, NULL, NULL, NULL, 1, 1, 1, '2020-07-28 19:48:10', NULL, NULL, NULL),
 (89, NULL, NULL, NULL, NULL, 1, 1, 1, '2020-07-28 20:57:34', NULL, NULL, NULL),
-(90, NULL, NULL, NULL, NULL, 1, 0, 1, '2020-07-28 20:57:43', 1, '2020-07-28 20:58:15', NULL);
+(90, NULL, NULL, NULL, NULL, 1, 0, 1, '2020-07-28 20:57:43', 1, '2020-07-28 20:58:15', NULL),
+(91, NULL, NULL, NULL, NULL, 1, 1, 1, '2020-08-11 23:38:50', NULL, NULL, NULL),
+(92, 'Judul', 'Judul', '<html>\n<head>\n	<title></title>\n</head>\n<body>\n<p>Lorem&nbsp;ipsum&nbsp;dolor&nbsp;sit&nbsp;amet,&nbsp;consectetur&nbsp;adipisicing&nbsp;elit.&nbsp;Maiores&nbsp;distinctio&nbsp;eaque&nbsp;ab&nbsp;voluptatibus&nbsp;animi&nbsp;praesentium&nbsp;beatae&nbsp;nesciunt&nbsp;doloribus&nbsp;iure&nbsp;impedit!&nbsp;Laudantium&nbsp;hic&nbsp;quos&nbsp;nulla&nbsp;deleniti&nbsp;ex&nbsp;distinctio&nbsp;error&nbsp;delectus&nbsp;aperiam!</p>\n</body>\n</html>\n', 2, 0, 1, 1, '2020-08-12 00:51:14', NULL, NULL, 0),
+(93, 'News', 'News', '<html>\n<head>\n	<title></title>\n</head>\n<body>\n<p>Lorem&nbsp;ipsum&nbsp;dolor&nbsp;sit&nbsp;amet,&nbsp;consectetur&nbsp;adipisicing&nbsp;elit.&nbsp;Maiores&nbsp;distinctio&nbsp;eaque&nbsp;ab&nbsp;voluptatibus&nbsp;animi&nbsp;praesentium&nbsp;beatae&nbsp;nesciunt&nbsp;doloribus&nbsp;iure&nbsp;impedit!&nbsp;Laudantium&nbsp;hic&nbsp;quos&nbsp;nulla&nbsp;deleniti&nbsp;ex&nbsp;distinctio&nbsp;error&nbsp;delectus&nbsp;aperiam!</p>\n</body>\n</html>\n', 1, 0, 1, 1, '2020-08-12 00:55:09', NULL, NULL, 0),
+(94, 'New Lagi', 'New-Lagi', '<html>\n<head>\n	<title></title>\n</head>\n<body>\n<p>Lorem&nbsp;ipsum&nbsp;dolor&nbsp;sit&nbsp;amet,&nbsp;consectetur&nbsp;adipisicing&nbsp;elit.&nbsp;Maiores&nbsp;distinctio&nbsp;eaque&nbsp;ab&nbsp;voluptatibus&nbsp;animi&nbsp;praesentium&nbsp;beatae&nbsp;nesciunt&nbsp;doloribus&nbsp;iure&nbsp;impedit!&nbsp;Laudantium&nbsp;hic&nbsp;quos&nbsp;nulla&nbsp;deleniti&nbsp;ex&nbsp;distinctio&nbsp;error&nbsp;delectus&nbsp;aperiam!</p>\n</body>\n</html>\n', 1, 0, 1, 1, '2020-08-12 00:55:55', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -328,7 +341,11 @@ INSERT INTO `t_file` (`file_id`, `content_id`, `file_name`, `mime_type`, `path_l
 (47, 87, '20200725235615-a751ef2da5.jpg', 'image/jpeg', '2020/content-87/', 'desktop', 0, 1, '2020-07-25 23:56:13', 1, '2020-07-25 23:56:20'),
 (48, 88, '20200728194850-img (68).jpg', 'image/jpeg', '2020/content-88/', 'desktop', 1, 1, '2020-07-28 19:48:10', NULL, NULL),
 (49, 89, '20200728205730-img (68).jpg', 'image/jpeg', '2020/content-89/', 'desktop', 1, 1, '2020-07-28 20:57:34', NULL, NULL),
-(50, 90, '20200728205776-img (68).jpg', 'image/jpeg', '2020/content-90/', 'mobile', 0, 1, '2020-07-28 20:57:43', 1, '2020-07-28 20:58:15');
+(50, 90, '20200728205776-img (68).jpg', 'image/jpeg', '2020/content-90/', 'mobile', 0, 1, '2020-07-28 20:57:43', 1, '2020-07-28 20:58:15'),
+(51, 91, '20200811233810-img (68).jpg', 'image/jpeg', '2020/content-91/', 'mobile', 1, 1, '2020-08-11 23:38:50', NULL, NULL),
+(52, 92, '20200812005170-img (68).jpg', 'image/jpeg', '2020/content-92/', 'desktop', 1, 1, '2020-08-12 00:51:56', NULL, NULL),
+(53, 93, '20200812005519-img (68).jpg', 'image/jpeg', '2020/content-93/', 'desktop', 1, 1, '2020-08-12 00:55:27', NULL, NULL),
+(54, 94, '20200812005642-img (68).jpg', 'image/jpeg', '2020/content-94/', 'desktop', 1, 1, '2020-08-12 00:56:11', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -351,7 +368,7 @@ CREATE TABLE `t_user_login` (
 --
 
 INSERT INTO `t_user_login` (`login_id`, `user_id`, `login_code`, `login_pass`, `s_pass`, `status_id`, `is_dev`) VALUES
-(1, 1, 'dev@gmail.com', '2b42ab75e6481e9d57023028d1b8535ea35a269e709f7cb226511aedc24e6056', '$2b$10$Od2SO.97EmupMRcG8iOmR.pvVd5FvAil9xpACm917zavXE6PEY52m', 1, 0);
+(1, 1, 'dev@gmail.com', '10fcd8c1191d179bb6995e8cbf32af8ec757c40f71b335d95e067b746b686f3b', '$2b$10$.l3Kris7GNNzhC2MowZDFuETxJGIOXWsHNmMuX0r1IDnSId6fpBb.', 1, 0);
 
 --
 -- Indexes for dumped tables
@@ -495,7 +512,7 @@ ALTER TABLE `m_type_content`
 -- AUTO_INCREMENT untuk tabel `m_user`
 --
 ALTER TABLE `m_user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `t_assign`
@@ -507,25 +524,25 @@ ALTER TABLE `t_assign`
 -- AUTO_INCREMENT untuk tabel `t_category_rel`
 --
 ALTER TABLE `t_category_rel`
-  MODIFY `category_rel_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `category_rel_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT untuk tabel `t_content`
 --
 ALTER TABLE `t_content`
-  MODIFY `content_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `content_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT untuk tabel `t_file`
 --
 ALTER TABLE `t_file`
-  MODIFY `file_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `file_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT untuk tabel `t_user_login`
 --
 ALTER TABLE `t_user_login`
-  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `login_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)

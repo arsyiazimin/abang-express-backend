@@ -28,20 +28,21 @@ export class AuthService {
         let image_url = '';
         let image_path = '';
         const empData = await this.userService.getUserById(id);
-        const images = ''
+        // const foto_profile = empData.foto_profile
         const full_name = `${empData.first_name} ${empData.last_name}`;
         const today = new Date()
         today.setSeconds(today.getSeconds() + conf.default.DAILY_EXPIRED)
 
-        if (images) {
-            // image_path = images.PATH_LOCATION + '' + images.FILE_NAME;
-            // image_url = image_path;
+        if (empData.foto_profile) {
+            image_path = empData.path_location + '' + empData.foto_profile;
+            image_url = image_path;
         }
         const user: AuthInterfaces = {
             id,
             username,
             full_name,
             image_url,
+            job_title_name: empData.job_title_name,
             daily_exp: conf.default.DAILY_EXPIRED,
             daily_date: today
         };

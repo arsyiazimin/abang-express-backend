@@ -24,6 +24,24 @@ export class User {
     @Column()
     update_date: Date;
 
+    @Column()
+    foto_profile: string;
+
+    @Column()
+    path_location: string;
+
+    @Column()
+    banner: string;
+
+    @Column()
+    address: string;
+
+    @Column()
+    phone: string;
+
+    @Column()
+    job_title_name: string;
+
     @OneToOne(type => UserLogin, emp => emp.employee, { cascade: ["insert", "update"], onDelete: 'CASCADE' })
     user_login: UserLogin
 
