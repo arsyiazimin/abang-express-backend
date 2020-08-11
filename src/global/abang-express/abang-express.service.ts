@@ -10,6 +10,15 @@ import { kotaAgen } from './entity/kotaAgen.entity';
 import { Transaksi } from './entity/transaksi.entity';
 import { log } from './entity/log.entity';
 
+export interface cekPriceInterface {
+    tujuan: string;
+    asal: string;
+    berat: number;
+    panjang: number;
+    lebar: number;
+    tinggi: number;
+}
+
 @Injectable()
 export class AbangExpressService {
     constructor(
@@ -22,14 +31,31 @@ export class AbangExpressService {
         @InjectRepository(log) private readonly logRepo: Repository<log>,
     ) { }
 
-    async getPriceList(tujuan: string, berat: number, asal: string, @Res() res): Promise<priceList[]> {
+    async getPriceList(body: cekPriceInterface, @Res() res): Promise<priceList[]> {
         // console.log(tujuan)
         try {
             // const agen = await getManager('abaj2285_ax').query(`select header, alamat, telepon, wa, rate from users where referal = '${asal}'`);
+            console.log(body)
+            console.log(+body.panjang)
+            console.log(+body.lebar)
+            console.log(+body.tinggi)
+            let volume = (+body.panjang * +body.lebar * +body.tinggi)
+            let berat2 = volume / 5000;
+            let berat_fix = body.berat;
+
+            console.log(volume)
+            console.log(berat2)
+            console.log(ceil(berat2))
+            console.log(ceil(body.berat))
+            if (ceil(berat2) > ceil(body.berat)) {
+                console.log('sini')
+                berat_fix = berat2
+            }
+            console.log(berat_fix)
             const agen = await this.usersRepo.find({
                 select: ['header', 'alamat', 'telepon', 'wa', 'rate'],
                 where: {
-                    referal: asal
+                    referal: body.asal
                 }
             })
 
@@ -40,7 +66,7 @@ export class AbangExpressService {
                 .addSelect(`p.jenis as jenis`)
                 .addSelect(`p.berat as berat`)
                 .addSelect(`p.harga as harga`)
-                .where(`p.tujuan = '${tujuan}' AND berat = ${ceil(berat)} AND ket = '${agen[0].rate}'`)
+                .where(`p.tujuan = '${body.tujuan}' AND berat = ${ceil(berat_fix)} AND ket = '${agen[0].rate}'`)
                 .getRawMany()
             if (model.length !== 0) {
                 return res
