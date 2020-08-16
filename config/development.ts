@@ -1,5 +1,6 @@
 export default {
   HOST: 'https://localhost', // dev
+  // HOST: 'https://192.168.1.2', // dev mac
   PORT: '3000', // dev
   SECRET: 'asdasf;qqwrlmsdfmafk;rqwelqkrjlsdffsdfdsjhfksrweriuosfpyuirewbfmsdfbmsdfiwher;dsf;rerkhjgkertkr',
   JWT_EXPIRED: 604800,
