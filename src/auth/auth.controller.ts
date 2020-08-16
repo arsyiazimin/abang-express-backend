@@ -91,10 +91,14 @@ export class AuthController {
                         await this.authService.createTokenMobile(user.username),
                     );
             }
+        } else {
+            return res
+                .status(HttpStatus.OK)
+                .json({ message: 'Username or Password Wrong!' });
         }
 
-        return res
-            .status(HttpStatus.UNPROCESSABLE_ENTITY)
-            .json({ message: 'Username or Password Wrong!!' });
+        // return res
+        //     .status(HttpStatus.UNPROCESSABLE_ENTITY)
+        //     .json({ message: 'Username or Password Wrong!!' });
     }
 }
