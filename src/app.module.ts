@@ -8,7 +8,7 @@ import { LoggerModule } from './logger/logger.module';
 import { AuthModule } from './auth/auth.module';
 // import { UserModule } from './global/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EverytingSubscriber } from 'common/subscriber/EverythingSubscriber';
+import { EverytingSubscriber } from './common/subscriber/EverythingSubscriber';
 import { GlobalModule } from './global/global.module';
 import { typeOrmDb1Config } from "./config/typeormDb1.config";
 import { typeOrmDb2Config } from "./config/typeormDb2.config";
@@ -26,8 +26,35 @@ import { Connection } from 'typeorm';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(typeOrmDb1Config),
-    TypeOrmModule.forRoot(typeOrmDb2Config),
+    // TypeOrmModule.forRoot(typeOrmDb1Config),
+    // TypeOrmModule.forRoot(typeOrmDb2Config),
+    TypeOrmModule.forRoot({
+      name: 'default',
+      type: 'mariadb',
+      host: 'localhost',
+      port: 3306,
+      username: 'abaj2285_AX',
+      password: 'setiawan007',
+      database: 'abaj2285_admin',
+      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      synchronize: false,
+      subscribers: [EverytingSubscriber],
+      logging: true,
+    }),
+    TypeOrmModule.forRoot({
+      name: 'abaj2285_ax',
+      type: 'mariadb',
+      host: 'localhost',
+      port: 3306,
+      username: 'abaj2285_AX',
+      password: 'setiawan007',
+      database: 'abaj2285_AX',
+      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      synchronize: false,
+      subscribers: [EverytingSubscriber],
+      logging: true,
+    }),
+    // TypeOrmModule.forRoot(typeOrmDb2Config),
     // MulterModule.register({
     //   storage: diskStorage({
     //     filename: (req, file, cb) => {
