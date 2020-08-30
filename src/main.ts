@@ -5,7 +5,7 @@ import { Transport } from '@nestjs/microservices';
 import * as helmet from 'helmet';
 import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
-import { MyLoggerService } from 'logger/my-logger/my-logger.service';
+import { MyLoggerService } from './logger/my-logger/my-logger.service';
 import * as fs from 'fs';
 import * as https from 'https';
 import * as express from 'express';
@@ -23,6 +23,7 @@ async function bootstrap() {
   const expressApp = express();
 
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+  // const app = await NestFactory.create(AppModule);
   //if use logger
   app.useLogger(app.get(MyLoggerService));
   app.use(helmet());
@@ -74,6 +75,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.init();
-  await https.createServer(credentials, expressApp).listen(AppModule.port);
+  await https.createServer(expressApp).listen(AppModule.port);
 }
 bootstrap();

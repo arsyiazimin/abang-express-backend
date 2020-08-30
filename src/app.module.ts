@@ -1,7 +1,7 @@
 import { Module, NestModule, MiddlewareConsumer, RequestMethod, Inject } from '@nestjs/common';
 import { SharedModule } from './shared/shared.module';
-import { ConfigurationService } from 'shared/configuration/configuration.service';
-import { Configuration } from 'shared/configuration/configuratio.enum';
+import { ConfigurationService } from './shared/configuration/configuration.service';
+import { Configuration } from './shared/configuration/configuratio.enum';
 import { LoggerMiddleware } from './common/middleware/logger/logger.middleware';
 import { MailerModule } from '@nest-modules/mailer';
 import { LoggerModule } from './logger/logger.module';
@@ -22,6 +22,7 @@ import { extname } from 'path';
 import { PartnerModule } from './modules/partner/partner.module';
 import { CompanyModule } from './modules/company/company.module';
 import { LayananModule } from './modules/layanan/layanan.module';
+import { Connection } from 'typeorm';
 
 @Module({
   imports: [
@@ -63,7 +64,9 @@ export class AppModule implements NestModule {
 
   constructor(
     // @Inject('MailerProvider') private readonly mailerProvider,
-    private readonly _configurationService: ConfigurationService) {
+    private readonly _configurationService: ConfigurationService,
+    private readonly connection: Connection) {
+    console.log('connectin status : ', connection.isConnected)
 
     // constructor(private readonly _configurationService: ConfigurationService) {
 

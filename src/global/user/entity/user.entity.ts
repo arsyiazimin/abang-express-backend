@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Column, AdvancedConsoleLogger, OneToOne, JoinColumn, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { UserLogin } from 'global/user-login/entity/userLogin.entity';
+import { UserLogin } from '../../../global/user-login/entity/userLogin.entity';
 
 @Entity('m_user')
 export class User {

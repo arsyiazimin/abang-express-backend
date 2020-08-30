@@ -54,7 +54,7 @@ export class PartnerService {
 
     async uploadPath(file, layanan_id) {
 
-        const exacpath: string = 'src/file/partner/';
+        const exacpath: string = 'dist/src/file/partner/';
         let finalpath: string;
         let finalName;
 

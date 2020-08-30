@@ -1,13 +1,13 @@
 import { Controller, Post, UseInterceptors, Body, Response, HttpStatus } from '@nestjs/common';
 import { ApiUseTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { UserService } from 'global/user/services/user/user.service';
+import { UserService } from '../global/user/services/user/user.service';
 import { LoggingInterceptor } from '../common/interceptors/logging/logging.interceptor';
 import { LoginUserDto, LoginUserMobileDto } from './dto/loginUser.dto';
 import { HashDto } from './dto/hash.dto';
 import { SignupDTO } from './dto/signup.dto';
-import { PasswordHasherService } from 'global/user/services/hasher/password-hasher/password-hasher.service';
-import { AbangExpressService } from 'global/abang-express/abang-express.service';
+import { PasswordHasherService } from '../global/user/services/hasher/password-hasher/password-hasher.service';
+import { AbangExpressService } from '../global/abang-express/abang-express.service';
 
 @ApiUseTags('Auth')
 @Controller('auth')

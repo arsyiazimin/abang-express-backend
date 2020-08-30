@@ -1,7 +1,7 @@
 import { Controller, UseGuards, Post, UseInterceptors, UploadedFiles, Res, Put, Param, Body, Get, HttpStatus } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth, ApiImplicitParam } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { UserService } from 'global/user/services/user/user.service';
+import { UserService } from '../../../../global/user/services/user/user.service';
 import { FilesInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
 import { diskStorage } from 'multer';

@@ -6,8 +6,8 @@ import { UserModule } from '../global/user/user.module';
 import { Configuration } from '../shared/configuration/configuratio.enum';
 import { ConfigurationService } from '../shared/configuration/configuration.service';
 import { JwtStrategy } from './jwt.strategy';
-import { UserService } from 'global/user/services/user/user.service';
-import { GlobalModule } from 'global/global.module';
+import { UserService } from '../global/user/services/user/user.service';
+import { GlobalModule } from '../global/global.module';
 
 @Module({
   imports: [

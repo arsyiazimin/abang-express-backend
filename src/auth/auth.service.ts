@@ -1,13 +1,13 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { UserService } from 'global/user/services/user/user.service';
+import { UserService } from '../global/user/services/user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigurationService } from 'shared/configuration/configuration.service';
-import { Configuration } from 'shared/configuration/configuratio.enum';
+import { ConfigurationService } from '../shared/configuration/configuration.service';
+import { Configuration } from '../shared/configuration/configuratio.enum';
 import * as conf from '../../config/default';
 import { AuthInterfaces } from './interfaces/auth.interface';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { SignupDTO } from './dto/signup.dto';
-import { AbangExpressService } from 'global/abang-express/abang-express.service';
+import { AbangExpressService } from '../global/abang-express/abang-express.service';
 
 @Injectable()
 export class AuthService {

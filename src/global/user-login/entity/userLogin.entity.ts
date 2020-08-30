@@ -1,6 +1,6 @@
 
 import { Entity, PrimaryColumn, Column, AdvancedConsoleLogger, OneToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from 'global/user/entity/user.entity';
+import { User } from '../../../global/user/entity/user.entity';
 
 @Entity('t_user_login')
 export class UserLogin {
