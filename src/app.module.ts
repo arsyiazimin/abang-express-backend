@@ -103,6 +103,9 @@ export class AppModule implements NestModule {
     AppModule.host = _configurationService.get(Configuration.HOST);
     AppModule.isDev = _configurationService.isDevelopment;
     // AppModule.mailer = mailerProvider;
+    console.log(AppModule.port)
+    console.log(AppModule.host)
+    console.log(AppModule.isDev)
     console.log(process.env.SMTP_USERNAME)
     console.log(process.env.SMTP_PASSWORD)
     console.log(process.env.SMTP_HOST)
