@@ -26,34 +26,34 @@ import { Connection } from 'typeorm';
 
 @Module({
   imports: [
-    // TypeOrmModule.forRoot(typeOrmDb1Config),
-    // TypeOrmModule.forRoot(typeOrmDb2Config),
-    TypeOrmModule.forRoot({
-      name: 'default',
-      type: 'mariadb',
-      host: 'localhost',
-      port: 3306,
-      username: 'abaj2285_AX',
-      password: 'setiawan007',
-      database: 'abaj2285_admin',
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      synchronize: false,
-      subscribers: [EverytingSubscriber],
-      logging: true,
-    }),
-    TypeOrmModule.forRoot({
-      name: 'abaj2285_ax',
-      type: 'mariadb',
-      host: 'localhost',
-      port: 3306,
-      username: 'abaj2285_AX',
-      password: 'setiawan007',
-      database: 'abaj2285_AX',
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-      synchronize: false,
-      subscribers: [EverytingSubscriber],
-      logging: true,
-    }),
+    TypeOrmModule.forRoot(typeOrmDb1Config),
+    TypeOrmModule.forRoot(typeOrmDb2Config),
+    // TypeOrmModule.forRoot({
+    //   name: 'default',
+    //   type: 'mariadb',
+    //   host: 'localhost',
+    //   port: 3306,
+    //   username: 'abaj2285_AX',
+    //   password: 'setiawan007',
+    //   database: 'abaj2285_admin',
+    //   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    //   synchronize: false,
+    //   subscribers: [EverytingSubscriber],
+    //   logging: true,
+    // }),
+    // TypeOrmModule.forRoot({
+    //   name: 'abaj2285_ax',
+    //   type: 'mariadb',
+    //   host: 'localhost',
+    //   port: 3306,
+    //   username: 'abaj2285_AX',
+    //   password: 'setiawan007',
+    //   database: 'abaj2285_AX',
+    //   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    //   synchronize: false,
+    //   subscribers: [EverytingSubscriber],
+    //   logging: true,
+    // }),
     // TypeOrmModule.forRoot(typeOrmDb2Config),
     // MulterModule.register({
     //   storage: diskStorage({
@@ -103,6 +103,9 @@ export class AppModule implements NestModule {
     AppModule.host = _configurationService.get(Configuration.HOST);
     AppModule.isDev = _configurationService.isDevelopment;
     // AppModule.mailer = mailerProvider;
+    console.log(AppModule.port)
+    console.log(AppModule.host)
+    console.log(AppModule.isDev)
     console.log(process.env.SMTP_USERNAME)
     console.log(process.env.SMTP_PASSWORD)
     console.log(process.env.SMTP_HOST)
