@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule  } from './app.module';
+import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Transport } from '@nestjs/microservices';
 import * as helmet from 'helmet';
 import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
-import { MyLoggerService } from 'logger/my-logger/my-logger.service';
+import { MyLoggerService } from './logger/my-logger/my-logger.service';
 import * as fs from 'fs';
 import * as https from 'https';
 import * as express from 'express';
@@ -15,14 +15,15 @@ declare const module: any;
 
 async function bootstrap() {
   //if use https
-  const credentials = {
-    key: fs.readFileSync('localhost.key', 'utf8'),
-    cert: fs.readFileSync('localhost.cert', 'utf8')
+  const httpsOptions = {
+    key: fs.readFileSync('prod.key', 'utf8'),
+    cert: fs.readFileSync('prod.cert', 'utf8')
   };
 
-  const expressApp = express();
+  // const expressApp = express();
 
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+  // const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+  const app = await NestFactory.create(AppModule);
   //if use logger
   app.useLogger(app.get(MyLoggerService));
   app.use(helmet());
@@ -37,16 +38,16 @@ async function bootstrap() {
   // });
 
   const hostDomain = AppModule.isDev
-    ? `${AppModule.host}:${AppModule.port}`
-    : `${AppModule.host}:${AppModule.port}`;
+    ? `${AppModule.host}`
+    : `${AppModule.host}`;
   console.log(hostDomain);
-  
+
   const swaggerOptions = new DocumentBuilder()
     .setTitle('API')
     .setDescription('API Documentation')
     .setVersion('1.0.0')
     .setHost(hostDomain.split('//')[1])
-    .setSchemes('https')
+    .setSchemes('http')
     .setBasePath('/api')
     .addBearerAuth('Authorization', 'header')
     .build();
@@ -73,7 +74,8 @@ async function bootstrap() {
   }
 
   app.setGlobalPrefix('api');
-  app.init();
-  await https.createServer(credentials, expressApp).listen(AppModule.port);
+  await app.listen(AppModule.port);
+  // app.init();
+  // await https.createServer(expressApp).listen(AppModule.port);
 }
 bootstrap();

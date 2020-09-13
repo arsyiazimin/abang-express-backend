@@ -37,7 +37,7 @@ export class CompanyService {
 
     async uploadPath(file, company_id) {
 
-        const exacpath: string = 'src/file/company/';
+        const exacpath: string = 'dist/src/file/company/';
         let finalpath: string;
         let finalName;
 

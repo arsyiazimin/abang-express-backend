@@ -3,8 +3,8 @@ import * as md5 from 'md5';
 import { Repository, getManager } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserLogin } from "../../../user-login/entity/userLogin.entity";
-import { SignupDTO, updateUserDTO } from 'auth/dto/signup.dto';
-import { User } from 'global/user/entity/user.entity';
+import { SignupDTO, updateUserDTO } from '../../../../auth/dto/signup.dto';
+import { User } from '../../../../global/user/entity/user.entity';
 import * as bcrypt from 'bcrypt';
 import { PasswordHasherService } from '../hasher/password-hasher/password-hasher.service';
 import * as moment from 'moment';
@@ -119,7 +119,7 @@ export class UserService {
                     for (let index = 0; index < files.foto_profile.length; index++) {
                         resFile = await this.uploadPath(files.foto_profile[index], user_id);
                     }
-                    unlinkSync(`src/file/profile/${data.path_location}${data.foto_profile}`)
+                    unlinkSync(`dist/src/file/profile/${data.path_location}${data.foto_profile}`)
 
                 }
                 // console.log(resFile)
@@ -210,7 +210,7 @@ export class UserService {
 
     async uploadPath(file, user_id) {
 
-        const exacpath: string = 'src/file/profile/';
+        const exacpath: string = 'dist/src/file/profile/';
         let finalpath: string;
         let finalName;
 

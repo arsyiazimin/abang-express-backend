@@ -1,6 +1,6 @@
 import { Controller, UseGuards, Get, Put, Param, Body } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth, ApiImplicitParam } from '@nestjs/swagger';
-import { MenuService } from 'global/menu/services/menu/menu.service';
+import { MenuService } from '../../../../global/menu/services/menu/menu.service';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiUseTags('Menu')

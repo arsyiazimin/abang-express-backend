@@ -1,13 +1,13 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { UserService } from 'global/user/services/user/user.service';
+import { UserService } from '../global/user/services/user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigurationService } from 'shared/configuration/configuration.service';
-import { Configuration } from 'shared/configuration/configuratio.enum';
+import { ConfigurationService } from '../shared/configuration/configuration.service';
+import { Configuration } from '../shared/configuration/configuratio.enum';
 import * as conf from '../../config/default';
 import { AuthInterfaces } from './interfaces/auth.interface';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { SignupDTO } from './dto/signup.dto';
-import { AbangExpressService } from 'global/abang-express/abang-express.service';
+import { AbangExpressService } from '../global/abang-express/abang-express.service';
 
 @Injectable()
 export class AuthService {
@@ -51,6 +51,7 @@ export class AuthService {
         return {
             expiresIn: AuthService.expired,
             accessToken,
+            status: 'success'
         };
     }
 
@@ -60,6 +61,8 @@ export class AuthService {
         const data = await this.abangExpressService.getUserByUsername(username);
         const images = data.logo
         const full_name = `${data.nama}`;
+        const phone = `${data.telepon}`;
+        const address = `${data.alamat}`;
         const today = new Date()
         today.setSeconds(today.getSeconds() + conf.default.DAILY_EXPIRED)
 
@@ -71,6 +74,8 @@ export class AuthService {
             username,
             full_name,
             images,
+            phone,
+            address,
             daily_exp: conf.default.DAILY_EXPIRED,
             daily_date: today
         };
@@ -79,6 +84,7 @@ export class AuthService {
         return {
             expiresIn: AuthService.expired,
             accessToken,
+            status: 'success'
         };
     }
 
