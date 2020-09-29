@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column } from "typeorm";
 
-@Entity('transaksi', { database: 'abaj2285_ax' })
+@Entity('transaksi', { database: 'abaj2285_AX' })
 export class Transaksi {
     @PrimaryColumn()
     noresi: string;

@@ -119,7 +119,9 @@ export class UserService {
                     for (let index = 0; index < files.foto_profile.length; index++) {
                         resFile = await this.uploadPath(files.foto_profile[index], user_id);
                     }
-                    unlinkSync(`dist/src/file/profile/${data.path_location}${data.foto_profile}`)
+                    if (data.path_location) {
+                        unlinkSync(`dist/src/file/profile/${data.path_location}${data.foto_profile}`)
+                    }
 
                 }
                 // console.log(resFile)

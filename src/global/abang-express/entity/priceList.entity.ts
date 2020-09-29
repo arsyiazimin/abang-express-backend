@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity('pricelistnew', { database: 'abaj2285_ax' })
+@Entity('pricelistnew', { database: 'abaj2285_AX' })
 export class priceList {
     @PrimaryGeneratedColumn()
     code: string;
