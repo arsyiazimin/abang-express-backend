@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule  } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Transport } from '@nestjs/microservices';
 import * as helmet from 'helmet';
 import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
-import { MyLoggerService } from './logger/my-logger/my-logger.service';
+import { MyLoggerService } from 'logger/my-logger/my-logger.service';
 import * as fs from 'fs';
 import * as https from 'https';
 import * as express from 'express';
@@ -15,15 +15,14 @@ declare const module: any;
 
 async function bootstrap() {
   //if use https
-  const httpsOptions = {
-    key: fs.readFileSync('../../../ssl/keys/bfb95_bd859_cfd244501a30f0d1707048acc66a4b53.key', 'utf8'),
-    cert: fs.readFileSync('../../../ssl/certs/api_abangexpress_id_b59bc_8595b_1606348799_508b9ad947772fbebdd86d516fff8bfb.crt', 'utf8')
+  const credentials = {
+    key: fs.readFileSync('localhost.key', 'utf8'),
+    cert: fs.readFileSync('localhost.cert', 'utf8')
   };
 
-  // const expressApp = express();
+  const expressApp = express();
 
-  // const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
   //if use logger
   app.useLogger(app.get(MyLoggerService));
   app.use(helmet());
@@ -38,16 +37,16 @@ async function bootstrap() {
   // });
 
   const hostDomain = AppModule.isDev
-    ? `${AppModule.host}`
-    : `${AppModule.host}`;
+    ? `${AppModule.host}:${AppModule.port}`
+    : `${AppModule.host}:${AppModule.port}`;
   console.log(hostDomain);
-
+  
   const swaggerOptions = new DocumentBuilder()
     .setTitle('API')
     .setDescription('API Documentation')
     .setVersion('1.0.0')
     .setHost(hostDomain.split('//')[1])
-    .setSchemes('http')
+    .setSchemes('https')
     .setBasePath('/api')
     .addBearerAuth('Authorization', 'header')
     .build();
@@ -74,8 +73,7 @@ async function bootstrap() {
   }
 
   app.setGlobalPrefix('api');
-  await app.listen(AppModule.port);
-  // app.init();
-  // await https.createServer(expressApp).listen(AppModule.port);
+  app.init();
+  await https.createServer(credentials, expressApp).listen(AppModule.port);
 }
 bootstrap();
