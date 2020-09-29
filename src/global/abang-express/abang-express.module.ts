@@ -8,6 +8,8 @@ import { tujuan } from './entity/tujuan.entity';
 import { kotaAgen } from './entity/kotaAgen.entity';
 import { Transaksi } from './entity/transaksi.entity';
 import { log } from './entity/log.entity';
+import { outBound } from './entity/outbound.entity';
+import { AbangExpressController } from './controller/abang-express.controller';
 
 @Module({
   imports: [
@@ -19,9 +21,11 @@ import { log } from './entity/log.entity';
       kotaAgen,
       Transaksi,
       log,
+      outBound
     ])
   ],
   providers: [AbangExpressService],
-  exports: [AbangExpressService]
+  exports: [AbangExpressService],
+  controllers: [AbangExpressController]
 })
 export class AbangExpressModule { }
