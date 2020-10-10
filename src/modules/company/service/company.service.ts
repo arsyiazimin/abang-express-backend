@@ -8,9 +8,13 @@ import * as mkDir from "make-dir";
 import * as move from "move-file";
 import { unlinkSync, existsSync, mkdirSync, renameSync, mkdir, readFileSync, writeFileSync, copyFileSync, } from 'fs';
 import * as md5 from 'md5';
+import * as config from 'config';
 
 @Injectable()
 export class CompanyService {
+
+    folderRoot = config.get('FOLDER_ROOT')
+
     constructor(
         @InjectRepository(Company) private readonly companyRepo: Repository<Company>
     ) { }
@@ -37,7 +41,7 @@ export class CompanyService {
 
     async uploadPath(file, company_id) {
 
-        const exacpath: string = 'dist/src/file/company/';
+        const exacpath: string = `${this.folderRoot}file/company/`;
         let finalpath: string;
         let finalName;
 

@@ -13,9 +13,13 @@ import { unlinkSync, existsSync, mkdirSync, renameSync, mkdir, readFileSync, wri
 import * as md5 from 'md5';
 import { RequestContext } from '../../../../common/subscriber/RequestContext';
 import { async } from 'rxjs/internal/scheduler/async';
+import * as config from 'config';
 
 @Injectable()
 export class BlogService {
+
+    folderRoot = config.get('FOLDER_ROOT')
+
     constructor(
         @InjectRepository(Content) private readonly ContentRepo: Repository<Content>,
         @InjectRepository(File) private readonly FileRepo: Repository<File>,
@@ -327,7 +331,7 @@ export class BlogService {
                 dataRemove.forEach(el => {
                     if (el.file_name) {
                         console.log(el)
-                        unlinkSync(`dist/src/file/content/${el.path_location}${el.file_name}`)
+                        unlinkSync(`${this.folderRoot}file/content/${el.path_location}${el.file_name}`)
                     }
                 })
             }
@@ -436,7 +440,7 @@ export class BlogService {
 
     async uploadPath(file, content_id) {
 
-        const exacpath: string = 'dist/src/file/content/';
+        const exacpath: string = `${this.folderRoot}file/content/`;
         let finalpath: string;
         let finalName;
 
