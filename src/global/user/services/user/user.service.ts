@@ -12,9 +12,13 @@ import * as mkDir from "make-dir";
 import * as move from "move-file";
 import { unlinkSync, existsSync, mkdirSync, renameSync, mkdir, readFileSync, writeFileSync, copyFileSync, } from 'fs';
 // import { AuthService } from 'auth/auth.service';
+import * as config from 'config';
 
 @Injectable()
 export class UserService {
+
+    folderRoot = config.get('FOLDER_ROOT')
+
     constructor(
         @InjectRepository(UserLogin) private readonly userRepository: Repository<UserLogin>,
         @InjectRepository(User) private readonly UserRepository: Repository<User>,
@@ -120,7 +124,7 @@ export class UserService {
                         resFile = await this.uploadPath(files.foto_profile[index], user_id);
                     }
                     if (data.path_location) {
-                        unlinkSync(`dist/src/file/profile/${data.path_location}${data.foto_profile}`)
+                        unlinkSync(`${this.folderRoot}file/profile/${data.path_location}${data.foto_profile}`)
                     }
 
                 }
@@ -212,7 +216,7 @@ export class UserService {
 
     async uploadPath(file, user_id) {
 
-        const exacpath: string = 'dist/src/file/profile/';
+        const exacpath: string = `${this.folderRoot}file/profile/`;
         let finalpath: string;
         let finalName;
 

@@ -62,5 +62,7 @@ export default {
     HOST: '192.168.56.101',
     PORT: 6379,
     DURATION: 60000
-  }
+  },
+  FOLDER_ROOT: 'src/' //dev
+  // FOLDER_ROOT: 'dist/src/' //prod
 };

@@ -7,16 +7,20 @@ import * as mkDir from "make-dir";
 import * as move from "move-file";
 import { unlinkSync, existsSync, mkdirSync, renameSync, mkdir, readFileSync, writeFileSync, copyFileSync, } from 'fs';
 import * as md5 from 'md5';
+import * as config from 'config';
 
 @Injectable()
 export class PartnerService {
+
+    folderRoot = config.get('FOLDER_ROOT')
+
     constructor(
         @InjectRepository(Partner) private readonly partnerRepo: Repository<Partner>
     ) { }
 
     async getAllPartner(@Res() res): Promise<Partner[]> {
         try {
-            const model = await this.partnerRepo.find({ where: { status_id: 1 }, order: {partner_id: 'ASC'} })
+            const model = await this.partnerRepo.find({ where: { status_id: 1 }, order: { partner_id: 'ASC' } })
             if (model) {
                 return res
                     .status(HttpStatus.OK)
@@ -54,7 +58,7 @@ export class PartnerService {
 
     async uploadPath(file, layanan_id) {
 
-        const exacpath: string = 'dist/src/file/partner/';
+        const exacpath: string = `${this.folderRoot}file/partner/`;
         let finalpath: string;
         let finalName;
 
@@ -63,9 +67,9 @@ export class PartnerService {
         if (!existsSync(exacpath + dir)) {
             await mkDir(exacpath + dir);
         }
-        
+
         let filext = file.originalname.split('.');
-        
+
         let oldPath = file.path;
         // let filename = md5(file.originalname).substr(0, 10);
         let filename = file.originalname;
