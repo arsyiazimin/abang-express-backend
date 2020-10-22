@@ -5,7 +5,7 @@ import { Transport } from '@nestjs/microservices';
 import * as helmet from 'helmet';
 import * as csurf from 'csurf';
 import * as rateLimit from 'express-rate-limit';
-import { MyLoggerService } from 'logger/my-logger/my-logger.service';
+import { MyLoggerService } from './logger/my-logger/my-logger.service';
 import * as fs from 'fs';
 import * as https from 'https';
 import * as express from 'express';

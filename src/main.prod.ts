@@ -16,8 +16,8 @@ declare const module: any;
 async function bootstrap() {
   //if use https
   const httpsOptions = {
-    key: fs.readFileSync('prod.key', 'utf8'),
-    cert: fs.readFileSync('prod.cert', 'utf8')
+    key: fs.readFileSync('../../../ssl/keys/bfb95_bd859_cfd244501a30f0d1707048acc66a4b53.key', 'utf8'),
+    cert: fs.readFileSync('../../../ssl/certs/api_abangexpress_id_b59bc_8595b_1606348799_508b9ad947772fbebdd86d516fff8bfb.crt', 'utf8')
   };
 
   // const expressApp = express();
