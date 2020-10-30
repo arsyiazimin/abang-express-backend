@@ -239,9 +239,9 @@ CREATE TABLE `t_assign` (
   `user_id` int(11) NOT NULL,
   `role_id` int(11) NOT NULL,
   `create_id` int(11) NOT NULL,
-  `create_date` date NOT NULL DEFAULT current_timestamp(),
+  `create_date` date NOT NULL,
   `update_id` int(11) NOT NULL,
-  `update_date` date NOT NULL DEFAULT current_timestamp()
+  `update_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------

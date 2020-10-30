@@ -55,6 +55,11 @@ export class OpenApiController {
         return await this.blogService.getBlogList(res)
     }
 
+    @Get('fileMob')
+    async getFileMob(@Res() res) {
+        return await this.blogService.getFileMob(res)
+    }
+
     @Get('getOneBlog/:content_id')
     @ApiImplicitParam({ name: 'content_id' })
     async getOneBlog(@Param('content_id') content_id, @Res() res) {
