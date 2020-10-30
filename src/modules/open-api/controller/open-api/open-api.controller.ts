@@ -1,15 +1,17 @@
-import { Controller, Get, Param, Res, Body, Post } from '@nestjs/common';
+import { Controller, Get, Param, Res, Body, Post, UseGuards } from '@nestjs/common';
 import { ApiUseTags, ApiImplicitParam } from '@nestjs/swagger';
-import { BlogService } from 'modules/blog/service/blog/blog.service';
+import { BlogService } from '../../../../modules/blog/service/blog/blog.service';
 import { get } from 'config';
-import { AbangExpressService } from 'global/abang-express/abang-express.service';
+import { AbangExpressService } from '../../../../global/abang-express/abang-express.service';
 import { async } from 'rxjs/internal/scheduler/async';
-import { PartnerService } from 'modules/partner/service/partner.service';
-import { LayananService } from 'modules/layanan/service/layanan.service';
-import { CompanyService } from 'modules/company/service/company.service';
+import { PartnerService } from '../../../../modules/partner/service/partner.service';
+import { LayananService } from '../../../../modules/layanan/service/layanan.service';
+import { CompanyService } from '../../../../modules/company/service/company.service';
+import { OpenApiGuard } from '../../../../common/guards/openApi.guard';
 
 @ApiUseTags('Open API')
 @Controller('open-api')
+@UseGuards(OpenApiGuard)
 export class OpenApiController {
 
     constructor(
@@ -26,7 +28,7 @@ export class OpenApiController {
     @ApiImplicitParam({ name: 'image' })
     async getImage(@Param('year') year, @Param('folder') folder, @Param('image') image, @Res() res): Promise<any> {
         let main_folder = folder.split('-')
-        let path = `src/file/${main_folder[0]}/`;
+        let path = `dist/src/file/${main_folder[0]}/`;
         res.sendFile(image, { root: path + year + '/' + folder });
     }
 
@@ -77,17 +79,18 @@ export class OpenApiController {
         return await this.axService.getAllTujuan(res)
     }
 
-    @Get('priceList/:tujuan/:berat/:asal')
-    @ApiImplicitParam({ name: 'tujuan' })
-    @ApiImplicitParam({ name: 'berat' })
-    @ApiImplicitParam({ name: 'asal' })
+    @Post('priceList')
+    // @ApiImplicitParam({ name: 'tujuan' })
+    // @ApiImplicitParam({ name: 'berat' })
+    // @ApiImplicitParam({ name: 'asal' })
     async getPriceList(
-        @Param('tujuan') tujuan,
-        @Param('berat') berat,
-        @Param('asal') asal,
+        // @Param('tujuan') tujuan,
+        // @Param('berat') berat,
+        // @Param('asal') asal,
+        @Body() Body,
         @Res() res
     ) {
-        return await this.axService.getPriceList(tujuan, berat, asal, res)
+        return await this.axService.getPriceList(Body, res)
     }
 
     @Get('getKotaAgenList')

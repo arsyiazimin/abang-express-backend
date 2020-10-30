@@ -1,7 +1,10 @@
 # compiled output
 dist
 node_modules
-src/file/content
+src/file
+config/development.ts
+config/production.ts
+src/app.module.dev.ts
 
 #package
 package-lock.json

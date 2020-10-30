@@ -1,11 +1,11 @@
 import { Injectable, Res, HttpStatus, Body } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Content } from 'modules/blog/entity/content.entity';
+import { Content } from '../../entity/content.entity';
 import { Repository, getManager, Not, IsNull } from 'typeorm';
-import { File } from 'modules/blog/entity/file.entity';
-import { cateCont } from 'modules/blog/entity/categoryContent.entity';
-import { TypeCont } from 'modules/blog/entity/typeContent.entity';
-import { cateRel } from 'modules/blog/entity/cateRel.entity';
+import { File } from '../../entity/file.entity';
+import { cateCont } from '../../entity/categoryContent.entity';
+import { TypeCont } from '../../entity/typeContent.entity';
+import { cateRel } from '../../entity/cateRel.entity';
 import * as moment from 'moment';
 import * as mkDir from "make-dir";
 import * as move from "move-file";
@@ -327,7 +327,7 @@ export class BlogService {
                 dataRemove.forEach(el => {
                     if (el.file_name) {
                         console.log(el)
-                        unlinkSync(`src/file/content/${el.path_location}${el.file_name}`)
+                        unlinkSync(`dist/src/file/content/${el.path_location}${el.file_name}`)
                     }
                 })
             }
@@ -436,7 +436,7 @@ export class BlogService {
 
     async uploadPath(file, content_id) {
 
-        const exacpath: string = 'src/file/content/';
+        const exacpath: string = 'dist/src/file/content/';
         let finalpath: string;
         let finalName;
 

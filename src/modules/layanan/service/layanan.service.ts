@@ -57,7 +57,7 @@ export class LayananService {
 
     async uploadPath(file, layanan_id) {
 
-        const exacpath: string = 'src/file/layanan/';
+        const exacpath: string = 'dist/src/file/layanan/';
         let finalpath: string;
         let finalName;
 
