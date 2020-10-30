@@ -49,6 +49,27 @@ export class BlogService {
         }
     }
 
+    async getFileMob(@Res() res): Promise<File[]> {
+
+        try {
+            const model = await this.FileRepo.find({ where: { device_name: 'mobile' } });
+            if (model) {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'data found.', respon: model });
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'no data found.', respon: model });
+            }
+
+        } catch (error) {
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message, respon: error });
+        }
+    }
+
     async getCategoryList(@Res() res): Promise<cateCont[]> {
 
         try {
