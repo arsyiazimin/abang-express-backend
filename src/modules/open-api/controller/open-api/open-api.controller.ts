@@ -8,11 +8,14 @@ import { PartnerService } from '../../../../modules/partner/service/partner.serv
 import { LayananService } from '../../../../modules/layanan/service/layanan.service';
 import { CompanyService } from '../../../../modules/company/service/company.service';
 import { OpenApiGuard } from '../../../../common/guards/openApi.guard';
+import * as config from 'config';
 
 @ApiUseTags('Open API')
 @Controller('open-api')
 @UseGuards(OpenApiGuard)
 export class OpenApiController {
+
+    folderRoot = config.get('FOLDER_ROOT')
 
     constructor(
         private blogService: BlogService,
@@ -28,7 +31,7 @@ export class OpenApiController {
     @ApiImplicitParam({ name: 'image' })
     async getImage(@Param('year') year, @Param('folder') folder, @Param('image') image, @Res() res): Promise<any> {
         let main_folder = folder.split('-')
-        let path = `dist/src/file/${main_folder[0]}/`;
+        let path = `${this.folderRoot}file/${main_folder[0]}/`;
         res.sendFile(image, { root: path + year + '/' + folder });
     }
 
