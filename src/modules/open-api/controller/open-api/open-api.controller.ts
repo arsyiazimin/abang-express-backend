@@ -87,6 +87,11 @@ export class OpenApiController {
         return await this.axService.getAllTujuan(res)
     }
 
+    @Get('getJenis')
+    async getJenis(@Res() res) {
+        return await this.axService.getJenis(res)
+    }
+
     @Post('priceList')
     // @ApiImplicitParam({ name: 'tujuan' })
     // @ApiImplicitParam({ name: 'berat' })
@@ -104,6 +109,12 @@ export class OpenApiController {
     @Get('getKotaAgenList')
     async getKotaAgenList(@Res() res) {
         return await this.axService.getKotaAgenList(res)
+    }
+
+    @Get('getAllOrder/:kodeagen')
+    @ApiImplicitParam({ name: 'kodeagen' })
+    async getAllOrder(@Param('kodeagen') kodeagen, @Res() res) {
+        return await this.axService.getAllOrder(kodeagen, res)
     }
 
     @Get('getAllAgent/:kodeagen')

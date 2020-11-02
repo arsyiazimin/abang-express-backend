@@ -1,7 +1,7 @@
 export default {
   HOST: 'https://localhost', // dev
   // HOST: 'http://127.0.0.1/', // prod
-  PORT: '3000', // dev
+  PORT: '3200', // dev
   SECRET: 'asdasf;qqwrlmsdfmafk;rqwelqkrjlsdffsdfdsjhfksrweriuosfpyuirewbfmsdfbmsdfiwher;dsf;rerkhjgkertkr',
   API_KEY: '569ae74a-6f04-4a63-af52-bfcb0898d600',
   JWT_EXPIRED: 604800,
