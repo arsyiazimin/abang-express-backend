@@ -10,6 +10,7 @@ import { kotaAgen } from './entity/kotaAgen.entity';
 import { Transaksi } from './entity/transaksi.entity';
 import { log } from './entity/log.entity';
 import { outBound } from './entity/outbound.entity';
+import { jenis } from './entity/jenis.entity';
 
 export interface cekPriceInterface {
     tujuan: string;
@@ -31,6 +32,7 @@ export class AbangExpressService {
         @InjectRepository(Transaksi) private readonly TransaksiRepo: Repository<Transaksi>,
         @InjectRepository(log) private readonly logRepo: Repository<log>,
         @InjectRepository(outBound) private readonly outBoudRepo: Repository<outBound>,
+        @InjectRepository(jenis) private readonly jenisRepo: Repository<jenis>,
     ) { }
 
     async getPriceList(body: cekPriceInterface, @Res() res): Promise<priceList[]> {
@@ -90,6 +92,44 @@ export class AbangExpressService {
     async getAllTujuan(@Res() res): Promise<tujuan[]> {
         try {
             const model = await this.tujuanRepo.find({ where: { status_id: 1 } });
+            if (model) {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'data found.', respon: model })
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'no data found.', respon: model })
+            }
+        } catch (error) {
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message, respon: error });
+        }
+    }
+
+    async getJenis(@Res() res): Promise<jenis[]> {
+        try {
+            const model = await this.jenisRepo.find();
+            if (model) {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'data found.', respon: model })
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'no data found.', respon: model })
+            }
+        } catch (error) {
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message, respon: error });
+        }
+    }
+
+    async getAllOrder(kodeagen, @Res() res): Promise<jenis[]> {
+        try {
+            const model = await this.TransaksiRepo.find({ where: { kodeagen: kodeagen } });
             if (model) {
                 return res
                     .status(HttpStatus.OK)

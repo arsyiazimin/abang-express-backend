@@ -10,6 +10,7 @@ import { Transaksi } from './entity/transaksi.entity';
 import { log } from './entity/log.entity';
 import { outBound } from './entity/outbound.entity';
 import { AbangExpressController } from './controller/abang-express.controller';
+import { jenis } from './entity/jenis.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { AbangExpressController } from './controller/abang-express.controller';
       kotaAgen,
       Transaksi,
       log,
-      outBound
+      outBound,
+      jenis
     ])
   ],
   providers: [AbangExpressService],

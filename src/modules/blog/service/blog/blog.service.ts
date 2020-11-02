@@ -52,7 +52,7 @@ export class BlogService {
     async getFileMob(@Res() res): Promise<File[]> {
 
         try {
-            const model = await this.FileRepo.find({ where: { device_name: 'mobile' } });
+            const model = await this.FileRepo.find({ where: { device_name: 'mobile', status_id : 1 } });
             if (model) {
                 return res
                     .status(HttpStatus.OK)
