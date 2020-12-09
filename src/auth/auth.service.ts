@@ -59,10 +59,12 @@ export class AuthService {
         let image_url = '';
         let image_path = '';
         const data = await this.abangExpressService.getUserByUsername(username);
+        console.log('data', data)
         const images = data.logo
         const full_name = `${data.nama}`;
         const phone = `${data.telepon}`;
         const address = `${data.alamat}`;
+        const role = `${data.kelas}`;
         const today = new Date()
         today.setSeconds(today.getSeconds() + conf.default.DAILY_EXPIRED)
 
@@ -76,6 +78,7 @@ export class AuthService {
             images,
             phone,
             address,
+            role,
             daily_exp: conf.default.DAILY_EXPIRED,
             daily_date: today
         };
