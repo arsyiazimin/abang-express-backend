@@ -1,6 +1,6 @@
 export default {
   HOST: 'https://localhost', // dev
-  PORT: '3000', // dev
+  PORT: '3200', // dev
   SECRET: 'asdasf;qqwrlmsdfmafk;rqwelqkrjlsdffsdfdsjhfksrweriuosfpyuirewbfmsdfbmsdfiwher;dsf;rerkhjgkertkr',
   JWT_EXPIRED: 604800,
   DAILY_EXPIRED: 86400,
