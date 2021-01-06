@@ -1,17 +1,28 @@
-import { Controller, Get, Param, Res, Body, Post } from '@nestjs/common';
+import { Controller, Get, Param, Res, Body, Post, UseGuards } from '@nestjs/common';
 import { ApiUseTags, ApiImplicitParam } from '@nestjs/swagger';
-import { BlogService } from 'modules/blog/service/blog/blog.service';
+import { BlogService } from '../../../../modules/blog/service/blog/blog.service';
 import { get } from 'config';
-import { AbangExpressService } from 'global/abang-express/abang-express.service';
+import { AbangExpressService } from '../../../../global/abang-express/abang-express.service';
 import { async } from 'rxjs/internal/scheduler/async';
+import { PartnerService } from '../../../../modules/partner/service/partner.service';
+import { LayananService } from '../../../../modules/layanan/service/layanan.service';
+import { CompanyService } from '../../../../modules/company/service/company.service';
+import { OpenApiGuard } from '../../../../common/guards/openApi.guard';
+import * as config from 'config';
 
 @ApiUseTags('Open API')
 @Controller('open-api')
+@UseGuards(OpenApiGuard)
 export class OpenApiController {
+
+    folderRoot = config.get('FOLDER_ROOT')
 
     constructor(
         private blogService: BlogService,
-        private axService: AbangExpressService
+        private axService: AbangExpressService,
+        private partnerService: PartnerService,
+        private layananService: LayananService,
+        private companyService: CompanyService
     ) { }
 
     @Get('files/:year/:folder/:image')
@@ -19,7 +30,8 @@ export class OpenApiController {
     @ApiImplicitParam({ name: 'folder' })
     @ApiImplicitParam({ name: 'image' })
     async getImage(@Param('year') year, @Param('folder') folder, @Param('image') image, @Res() res): Promise<any> {
-        let path = 'src/file/content/';
+        let main_folder = folder.split('-')
+        let path = `${this.folderRoot}file/${main_folder[0]}/`;
         res.sendFile(image, { root: path + year + '/' + folder });
     }
 
@@ -41,6 +53,11 @@ export class OpenApiController {
     @Get('blogList')
     async getBlogList(@Res() res) {
         return await this.blogService.getBlogList(res)
+    }
+
+    @Get('fileMob')
+    async getFileMob(@Res() res) {
+        return await this.blogService.getFileMob(res)
     }
 
     @Get('getOneBlog/:content_id')
@@ -70,22 +87,34 @@ export class OpenApiController {
         return await this.axService.getAllTujuan(res)
     }
 
-    @Get('priceList/:tujuan/:berat/:asal')
-    @ApiImplicitParam({ name: 'tujuan' })
-    @ApiImplicitParam({ name: 'berat' })
-    @ApiImplicitParam({ name: 'asal' })
+    @Get('getJenis')
+    async getJenis(@Res() res) {
+        return await this.axService.getJenis(res)
+    }
+
+    @Post('priceList')
+    // @ApiImplicitParam({ name: 'tujuan' })
+    // @ApiImplicitParam({ name: 'berat' })
+    // @ApiImplicitParam({ name: 'asal' })
     async getPriceList(
-        @Param('tujuan') tujuan,
-        @Param('berat') berat,
-        @Param('asal') asal,
+        // @Param('tujuan') tujuan,
+        // @Param('berat') berat,
+        // @Param('asal') asal,
+        @Body() Body,
         @Res() res
     ) {
-        return await this.axService.getPriceList(tujuan, berat, asal, res)
+        return await this.axService.getPriceList(Body, res)
     }
 
     @Get('getKotaAgenList')
     async getKotaAgenList(@Res() res) {
         return await this.axService.getKotaAgenList(res)
+    }
+
+    @Get('getAllOrder/:kodeagen')
+    @ApiImplicitParam({ name: 'kodeagen' })
+    async getAllOrder(@Param('kodeagen') kodeagen, @Res() res) {
+        return await this.axService.getAllOrder(kodeagen, res)
     }
 
     @Get('getAllAgent/:kodeagen')
@@ -98,5 +127,21 @@ export class OpenApiController {
     @ApiImplicitParam({ name: 'no_resi' })
     async trackResi(@Param('no_resi') no_resi, @Res() res) {
         return await this.axService.trackResi(no_resi, res)
+    }
+
+    @Get('getAllPartner')
+    async getAllpartner(@Res() res) {
+        return await this.partnerService.getAllPartner(res)
+    }
+
+    @Get('getAllLayanan')
+    async getAllLayanan(@Res() res) {
+        return await this.layananService.getAllLayanan(res)
+    }
+
+    @Get('getOneCompany/:company_id')
+    @ApiImplicitParam({ name: 'company_id' })
+    async getOneCompany(@Param('company_id') company_id, @Res() res) {
+        return await this.companyService.getOneCompany(company_id, res)
     }
 }

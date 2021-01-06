@@ -9,6 +9,17 @@ import { users } from './entity/agen.entity';
 import { kotaAgen } from './entity/kotaAgen.entity';
 import { Transaksi } from './entity/transaksi.entity';
 import { log } from './entity/log.entity';
+import { outBound } from './entity/outbound.entity';
+import { jenis } from './entity/jenis.entity';
+
+export interface cekPriceInterface {
+    tujuan: string;
+    asal: string;
+    berat: number;
+    panjang: number;
+    lebar: number;
+    tinggi: number;
+}
 
 @Injectable()
 export class AbangExpressService {
@@ -20,16 +31,35 @@ export class AbangExpressService {
         @InjectRepository(kotaAgen) private readonly kotaAgenRepo: Repository<kotaAgen>,
         @InjectRepository(Transaksi) private readonly TransaksiRepo: Repository<Transaksi>,
         @InjectRepository(log) private readonly logRepo: Repository<log>,
+        @InjectRepository(outBound) private readonly outBoudRepo: Repository<outBound>,
+        @InjectRepository(jenis) private readonly jenisRepo: Repository<jenis>,
     ) { }
 
-    async getPriceList(tujuan: string, berat: number, asal: string, @Res() res): Promise<priceList[]> {
+    async getPriceList(body: cekPriceInterface, @Res() res): Promise<priceList[]> {
         // console.log(tujuan)
         try {
             // const agen = await getManager('abaj2285_ax').query(`select header, alamat, telepon, wa, rate from users where referal = '${asal}'`);
+            console.log(body)
+            console.log(+body.panjang)
+            console.log(+body.lebar)
+            console.log(+body.tinggi)
+            let volume = (+body.panjang * +body.lebar * +body.tinggi)
+            let berat2 = volume / 5000;
+            let berat_fix = body.berat;
+
+            console.log(volume)
+            console.log(berat2)
+            console.log(ceil(berat2))
+            console.log(ceil(body.berat))
+            if (ceil(berat2) > ceil(body.berat)) {
+                console.log('sini')
+                berat_fix = berat2
+            }
+            console.log(berat_fix)
             const agen = await this.usersRepo.find({
                 select: ['header', 'alamat', 'telepon', 'wa', 'rate'],
                 where: {
-                    referal: asal
+                    referal: body.asal
                 }
             })
 
@@ -40,7 +70,7 @@ export class AbangExpressService {
                 .addSelect(`p.jenis as jenis`)
                 .addSelect(`p.berat as berat`)
                 .addSelect(`p.harga as harga`)
-                .where(`p.tujuan = '${tujuan}' AND berat = ${ceil(berat)} AND ket = '${agen[0].rate}'`)
+                .where(`p.tujuan = '${body.tujuan}' AND berat = ${ceil(berat_fix)} AND ket = '${agen[0].rate}'`)
                 .getRawMany()
             if (model.length !== 0) {
                 return res
@@ -62,6 +92,44 @@ export class AbangExpressService {
     async getAllTujuan(@Res() res): Promise<tujuan[]> {
         try {
             const model = await this.tujuanRepo.find({ where: { status_id: 1 } });
+            if (model) {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'data found.', respon: model })
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'no data found.', respon: model })
+            }
+        } catch (error) {
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message, respon: error });
+        }
+    }
+
+    async getJenis(@Res() res): Promise<jenis[]> {
+        try {
+            const model = await this.jenisRepo.find();
+            if (model) {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'data found.', respon: model })
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'no data found.', respon: model })
+            }
+        } catch (error) {
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message, respon: error });
+        }
+    }
+
+    async getAllOrder(kodeagen, @Res() res): Promise<jenis[]> {
+        try {
+            const model = await this.TransaksiRepo.find({ where: { kodeagen: kodeagen } });
             if (model) {
                 return res
                     .status(HttpStatus.OK)
@@ -321,6 +389,83 @@ export class AbangExpressService {
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .json({ message: error.message, respon: error });
+        }
+    }
+
+    async getUserByUsername(username: string): Promise<users> {
+        username = username.toLowerCase()
+        const user = await getManager()
+            .createQueryBuilder(users, 'user')
+            .where(`LOWER(user.username) = :username`, { username: username })
+            .getOne()
+        return user;
+    }
+
+    async outboudProses(body: any, @Res() res): Promise<any> {
+        const entityManager = getManager();
+        const connection = entityManager.connection;
+        const queryRunner = await connection.createQueryRunner();
+
+        await queryRunner.startTransaction();
+        try {
+            const trx = await getManager('abaj2285_ax')
+                .createQueryBuilder(Transaksi, 'trx')
+                .where(`trx.noresi = ${body.no_resi}`)
+                .orWhere(`trx.resivendor = ${body.no_resi}`)
+                .getOne();
+
+            if (trx) {
+                const dataOut = await this.outBoudRepo.findOne({ where: { resi: body.no_resi } });
+                if (dataOut) {
+                    /**
+                     * input ke outbound
+                     * bisa input selama pcs di outboud kurang dari pcs di trx
+                     */
+                    if (dataOut.pcs < trx.pcs) {
+                        dataOut.pcs = dataOut.pcs + 1
+                        dataOut.counter = dataOut.counter + 1
+
+                        await queryRunner.manager.save(dataOut).catch(async error => {
+                            throw new Error(error);
+                        })
+                    } else {
+                        /**
+                         * bingung kata2nya mau apa wkwkwk
+                         */
+                        return res
+                            .status(HttpStatus.OK)
+                            .json({ message: 'Nilai pcs transaksi = pcs outbound', respon: trx });
+                    }
+                } else {
+                    let out = {
+                        id: null,
+                        resi: body.no_resi,
+                        tanggal: new Date(),
+                        pcs: 1,
+                        counter: 1
+                    }
+                    const newOut = await this.outBoudRepo.create(out)
+                    await queryRunner.manager.save(newOut).catch(async error => {
+                        throw new Error(error);
+                    })
+                }
+                // await queryRunner.rollbackTransaction();
+                await queryRunner.commitTransaction();
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'Save Successfully' });
+            } else {
+                return res
+                    .status(HttpStatus.OK)
+                    .json({ message: 'Resi tidak ditemukan', respon: trx });
+            }
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            return res
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ message: error.message });
+        } finally {
+            await queryRunner.release();
         }
     }
 }

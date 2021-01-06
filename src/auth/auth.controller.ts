@@ -1,12 +1,13 @@
 import { Controller, Post, UseInterceptors, Body, Response, HttpStatus } from '@nestjs/common';
 import { ApiUseTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { UserService } from 'global/user/services/user/user.service';
+import { UserService } from '../global/user/services/user/user.service';
 import { LoggingInterceptor } from '../common/interceptors/logging/logging.interceptor';
-import { LoginUserDto } from './dto/loginUser.dto';
+import { LoginUserDto, LoginUserMobileDto } from './dto/loginUser.dto';
 import { HashDto } from './dto/hash.dto';
 import { SignupDTO } from './dto/signup.dto';
-import { PasswordHasherService } from 'global/user/services/hasher/password-hasher/password-hasher.service';
+import { PasswordHasherService } from '../global/user/services/hasher/password-hasher/password-hasher.service';
+import { AbangExpressService } from '../global/abang-express/abang-express.service';
 
 @ApiUseTags('Auth')
 @Controller('auth')
@@ -15,6 +16,7 @@ export class AuthController {
         private readonly authService: AuthService,
         private readonly userService: UserService,
         private readonly passwordHasher: PasswordHasherService,
+        private readonly abangExpressService: AbangExpressService
     ) { }
 
     @Post('login')
@@ -62,5 +64,41 @@ export class AuthController {
     async signup(@Body() body: SignupDTO) {
         return await this.authService.createUser(body)
         // return await this.userService.signup(body)
+    }
+
+    @Post('login-mobile')
+    @UseInterceptors(new LoggingInterceptor())
+    async loginMobileUser(@Response() res: any, @Body() body: LoginUserMobileDto) {
+        if (!body && body.username && body.password) {
+
+            return res
+                .status(HttpStatus.OK)
+                .json({ message: 'Username and Password are Required!' });
+        }
+        console.log(body.username);
+        const user = await this.abangExpressService.getUserByUsername(body.username);
+
+        if (user) {
+            if (
+                await this.passwordHasher.compareMd5(
+                    body.password,
+                    user.password,
+                )
+            ) {
+                return res
+                    .status(HttpStatus.OK)
+                    .json(
+                        await this.authService.createTokenMobile(user.username),
+                    );
+            }
+        } else {
+            return res
+                .status(HttpStatus.OK)
+                .json({ message: 'Username or Password Wrong!' });
+        }
+
+        // return res
+        //     .status(HttpStatus.UNPROCESSABLE_ENTITY)
+        //     .json({ message: 'Username or Password Wrong!!' });
     }
 }
