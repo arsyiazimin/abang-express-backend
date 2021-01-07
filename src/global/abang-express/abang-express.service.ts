@@ -57,30 +57,39 @@ export class AbangExpressService {
             }
             console.log(berat_fix)
             const agen = await this.usersRepo.find({
-                select: ['header', 'alamat', 'telepon', 'wa', 'rate'],
+                select: ['header', 'alamat', 'telepon', 'wa', 'rate', 'nama','referal','kec'],
                 where: {
                     referal: body.asal
                 }
             })
 
-            const model = await getManager('abaj2285_ax')
-                .createQueryBuilder(priceList, 'p')
-                .distinct(true)
-                .select(`p.tujuan as tujuan`)
-                .addSelect(`p.jenis as jenis`)
-                .addSelect(`p.berat as berat`)
-                .addSelect(`p.harga as harga`)
-                .where(`p.tujuan = '${body.tujuan}' AND berat = ${ceil(berat_fix)} AND ket = '${agen[0].rate}'`)
-                .getRawMany()
-            if (model.length !== 0) {
-                return res
-                    .status(HttpStatus.OK)
-                    .json({ message: 'data found.', respon: { priceList: model, agen: agen } })
+            console.log(agen)
+
+            if (agen.length !== 0) {
+                const model = await getManager('abaj2285_ax')
+                    .createQueryBuilder(priceList, 'p')
+                    .distinct(true)
+                    .select(`p.tujuan as tujuan`)
+                    .addSelect(`p.jenis as jenis`)
+                    .addSelect(`p.berat as berat`)
+                    .addSelect(`p.harga as harga`)
+                    .where(`p.tujuan = '${body.tujuan}' AND berat = ${ceil(berat_fix)} AND ket = '${agen[0].rate}'`)
+                    .getRawMany()
+                if (model.length !== 0) {
+                    return res
+                        .status(HttpStatus.OK)
+                        .json({ message: 'data found.', respon: { priceList: model, agen: agen } })
+                } else {
+                    return res
+                        .status(HttpStatus.OK)
+                        .json({ message: 'no data found.', respon: { priceList: model, agen: agen } })
+                }
             } else {
                 return res
-                    .status(HttpStatus.OK)
-                    .json({ message: 'no data found.', respon: { priceList: model, agen: agen } })
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .json({ message: 'Asal tidak ditemukan.', respon: 'Asal tidak ditemukan.' })
             }
+
         } catch (error) {
             return res
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -214,7 +223,7 @@ export class AbangExpressService {
             var data = JSON.stringify({ "awb": resi });
             var config = {
                 method: 'post',
-                url: 'https://abangexpress.id/api/tracking.php',
+                url: 'https://res.abangexpress.id/tracking/',
                 headers: {
                     'Content-Type': 'application/json'
                 },
