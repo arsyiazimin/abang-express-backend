@@ -7,6 +7,7 @@ import { async } from 'rxjs/internal/scheduler/async';
 import { PartnerService } from '../../../../modules/partner/service/partner.service';
 import { LayananService } from '../../../../modules/layanan/service/layanan.service';
 import { CompanyService } from '../../../../modules/company/service/company.service';
+import { OpenApiService } from '../../service/open-api/open-api.service';
 import { OpenApiGuard } from '../../../../common/guards/openApi.guard';
 import * as config from 'config';
 
@@ -22,7 +23,8 @@ export class OpenApiController {
         private axService: AbangExpressService,
         private partnerService: PartnerService,
         private layananService: LayananService,
-        private companyService: CompanyService
+        private companyService: CompanyService,
+        private openApiService: OpenApiService
     ) { }
 
     @Get('files/:year/:folder/:image')
@@ -137,6 +139,11 @@ export class OpenApiController {
     @Get('getAllLayanan')
     async getAllLayanan(@Res() res) {
         return await this.layananService.getAllLayanan(res)
+    }
+
+    @Get('getAllCs')
+    async getAllCs(@Res() res) {
+        return await this.openApiService.getAllCs(res)
     }
 
     @Get('getOneCompany/:company_id')
