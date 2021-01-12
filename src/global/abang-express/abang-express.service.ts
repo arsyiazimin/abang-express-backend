@@ -57,7 +57,7 @@ export class AbangExpressService {
             }
             console.log(berat_fix)
             const agen = await this.usersRepo.find({
-                select: ['header', 'alamat', 'telepon', 'wa', 'rate', 'nama','referal','kec'],
+                select: ['header', 'alamat', 'telepon', 'wa', 'rate', 'nama', 'referal', 'kec'],
                 where: {
                     referal: body.asal
                 }
@@ -78,16 +78,16 @@ export class AbangExpressService {
                 if (model.length !== 0) {
                     return res
                         .status(HttpStatus.OK)
-                        .json({ message: 'data found.', respon: { priceList: model, agen: agen } })
+                        .json({ message: 'data found.', respon: { priceList: model, agen: agen, volume: volume, berat_input: body.berat } })
                 } else {
                     return res
                         .status(HttpStatus.OK)
-                        .json({ message: 'no data found.', respon: { priceList: model, agen: agen } })
+                        .json({ message: 'no data found.', respon: { priceList: model, agen: agen, volume: volume, berat_input: body.berat } })
                 }
             } else {
                 return res
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .json({ message: 'Asal tidak ditemukan.', respon: 'Asal tidak ditemukan.' })
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .json({ message: 'Asal tidak ditemukan.', respon: 'Asal tidak ditemukan.' })
             }
 
         } catch (error) {

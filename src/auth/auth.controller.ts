@@ -90,6 +90,10 @@ export class AuthController {
                     .json(
                         await this.authService.createTokenMobile(user.username),
                     );
+            } else {
+                return res
+                .status(HttpStatus.OK)
+                .json({ message: 'Username or Password Wrong!' });
             }
         } else {
             return res
